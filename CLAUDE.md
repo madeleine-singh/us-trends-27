@@ -75,7 +75,7 @@ These apply to every component, every time — no exceptions for aesthetics:
 | What files were added / ingested and when | `context/INGESTION.md` |
 | Colors, typography, spacing, components, visual identity, CSS values | `design/design.md` |
 | Designing or implementing any UI, layout, screen, or motion | `design/design.md` + design skills above |
-| Page content (Home, Trend 1, Trend 2, Methodology, Regional Trends) | `pages/<page>.md` |
+| Page content (Home, Trend 1, Trend 2, Methodology, Regional Trends) | `page-content/<page>.md` |
 | Brand files, PDFs, images, exports, raw assets | `materials/MATERIALS.md` + scan `materials/` |
 
 ## Tech stack & deployment
@@ -83,7 +83,7 @@ These apply to every component, every time — no exceptions for aesthetics:
 - **Framework:** Next.js 15 (App Router, TypeScript, Tailwind CSS)
 - **Local dev:** `npm run dev` → http://localhost:3000
 - **Build:** `npm run build && npm start`
-- **Repo:** _TBD_ (GitHub — not yet created)
+- **Repo:** GitHub — https://github.com/madeleine-singh/us-trends-27
 - **Deploy:** _TBD_ (Vercel — not yet connected)
 
 Environment:

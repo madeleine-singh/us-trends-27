@@ -54,7 +54,7 @@ Key dates — context only, do not display on the site.
 
 ## Site pages
 
-Content for each page lives in `pages/`.
+Content for each page lives in `page-content/`.
 
 | Page | Purpose |
 |---|---|

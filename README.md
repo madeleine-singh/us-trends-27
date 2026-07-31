@@ -19,17 +19,17 @@ In progress — content written, site not yet built.
 | `context/project-context.txt` | Original project brief |
 | `design/design.md` | Visual identity, design tokens, and full CSS component reference |
 | `materials/` | Drop zone for raw assets — brand files, PDFs, images, exports |
-| `pages/` | Page content — Home, Trend 1, Trend 2, Methodology, Regional Trends |
+| `page-content/` | Page content — Home, Trend 1, Trend 2, Methodology, Regional Trends |
 
 ## Site pages
 
 | Page | File |
 |---|---|
-| Home | `pages/home.md` |
-| Trend 1 — Signed by Yours Truly | `pages/trend-1.md` |
-| Trend 2 — Give Me the Receipts | `pages/trend-2.md` |
-| Methodology | `pages/methodology.md` |
-| Regional Trends | `pages/regional-trends.md` |
+| Home | `page-content/home.md` |
+| Trend 1 — Signed by Yours Truly | `page-content/trend-1.md` |
+| Trend 2 — Give Me the Receipts | `page-content/trend-2.md` |
+| Methodology | `page-content/methodology.md` |
+| Regional Trends | `page-content/regional-trends.md` |
 
 ## Tech stack
 
