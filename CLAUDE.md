@@ -84,7 +84,7 @@ These apply to every component, every time — no exceptions for aesthetics:
 - **Local dev:** `npm run dev` → http://localhost:3000
 - **Build:** `npm run build && npm start`
 - **Repo:** GitHub — https://github.com/madeleine-singh/us-trends-27
-- **Deploy:** _TBD_ (Vercel — not yet connected)
+- **Deploy:** Vercel — https://us-trends-27.vercel.app/ (auto-deploy on push to `main`; preview deploys on PRs)
 
 Environment:
 - `.env.local` for local secrets (never committed)
