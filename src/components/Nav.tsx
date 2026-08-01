@@ -54,17 +54,16 @@ export default function Nav() {
           {/* Brand */}
           <Link
             href="/"
-            style={{
-              color: "#fff",
-              fontSize: 13,
-              fontWeight: 700,
-              letterSpacing: "0.02em",
-              textDecoration: "none",
-              whiteSpace: "nowrap",
-            }}
+            style={{ textDecoration: "none", display: "flex", alignItems: "center" }}
             className="transition-acc hover:opacity-70"
+            aria-label="Accenture Song — US Trends 2027 home"
           >
-            D&amp;DP · US Trends 2027
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/brand/Acc_Song_SvcMrk_White_Solid_RGB.svg"
+              alt="Accenture Song"
+              style={{ height: 16, width: "auto" }}
+            />
           </Link>
 
           {/* Desktop nav */}

@@ -69,8 +69,10 @@ export default function Trend2Page() {
       {/* ── Hero ──────────────────────────────────────────────────── */}
       <section
         className="on-dark"
-        style={{ background: "#000", padding: "clamp(80px, 12vw, 152px) 0 clamp(64px, 8vw, 96px)" }}
+        style={{ background: "#000", padding: "clamp(80px, 12vw, 152px) 0 clamp(64px, 8vw, 96px)", position: "relative", overflow: "hidden" }}
       >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/brand/Acc_GT_Solid_P1_RGB.svg" alt="" aria-hidden="true" className="hero-gt" />
         <div className="container">
           <span className="eyebrow">2027 Trend · 02</span>
           <h1 className="h1-display" style={{ color: "#fff", marginBottom: 0, maxWidth: 820 }}>

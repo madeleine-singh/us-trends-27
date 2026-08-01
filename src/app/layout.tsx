@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { DM_Sans, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import Nav from "@/components/Nav";
+import Footer from "@/components/Footer";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -45,6 +46,7 @@ export default function RootLayout({
         <main id="main-content" tabIndex={-1} style={{ paddingTop: "var(--nav-h)" }}>
           {children}
         </main>
+        <Footer />
       </body>
     </html>
   );
