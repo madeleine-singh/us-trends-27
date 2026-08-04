@@ -138,14 +138,13 @@ export default function Trend1Page() {
               <div className="two-col-layout">
                 <div>
                   <h3
-                    className="serif"
                     style={{ fontSize: "clamp(22px, 2.5vw, 30px)", fontWeight: 600, lineHeight: 1.2, color: "#000" }}
                   >
                     The Rise of Mass Individuality
                   </h3>
                 </div>
                 <div>
-                  <p style={{ fontSize: 15, lineHeight: 1.7, color: "#555", marginBottom: 16 }}>
+                  <p style={{ fontSize: 15, lineHeight: 1.7, color: "#333", marginBottom: 16 }}>
                     Algorithmic culture turns individuality into a mass-produced, easily replicated experience.
                   </p>
                   <ul className="bullet-list">
@@ -162,14 +161,13 @@ export default function Trend1Page() {
               <div className="two-col-layout">
                 <div>
                   <h3
-                    className="serif"
                     style={{ fontSize: "clamp(22px, 2.5vw, 30px)", fontWeight: 600, lineHeight: 1.2, color: "#000" }}
                   >
                     Technology Anxiety
                   </h3>
                 </div>
                 <div>
-                  <p style={{ fontSize: 15, lineHeight: 1.7, color: "#555", marginBottom: 16 }}>
+                  <p style={{ fontSize: 15, lineHeight: 1.7, color: "#333", marginBottom: 16 }}>
                     AI is accelerating "tasteslop," pushing people to either retreat offline or perform taste harder.
                   </p>
                   <ul className="bullet-list">
@@ -185,14 +183,13 @@ export default function Trend1Page() {
               <div className="two-col-layout">
                 <div>
                   <h3
-                    className="serif"
                     style={{ fontSize: "clamp(22px, 2.5vw, 30px)", fontWeight: 600, lineHeight: 1.2, color: "#000" }}
                   >
                     Early Proof of Authorship
                   </h3>
                 </div>
                 <div>
-                  <p style={{ fontSize: 15, lineHeight: 1.7, color: "#555", marginBottom: 16 }}>
+                  <p style={{ fontSize: 15, lineHeight: 1.7, color: "#333", marginBottom: 16 }}>
                     Authorship — sustained lived participation rather than just knowing what's cool — is becoming the new marker of status.
                   </p>
                   <ul className="bullet-list">
@@ -247,7 +244,7 @@ export default function Trend1Page() {
               What This Means for Brands and Designers
             </h2>
             <p style={{ fontSize: 13, color: "#AAAAAA", marginTop: 12 }}>
-              Click any card to read more.
+              Hover any card to read more.
             </p>
             <p style={{ fontSize: 15, lineHeight: 1.7, color: "#555", maxWidth: 620, marginTop: 16 }}>
               The shift toward authorship specificity creates a clear challenge. Conviction, craft

@@ -139,12 +139,12 @@ export default function Trend2Page() {
             <ScrollReveal>
               <div className="two-col-layout">
                 <div>
-                  <h3 className="serif" style={{ fontSize: "clamp(22px, 2.5vw, 30px)", fontWeight: 600, lineHeight: 1.2, color: "#000" }}>
+                  <h3 style={{ fontSize: "clamp(22px, 2.5vw, 30px)", fontWeight: 600, lineHeight: 1.2, color: "#000" }}>
                     Government Stopped Feeling Reliable
                   </h3>
                 </div>
                 <div>
-                  <p style={{ fontSize: 15, lineHeight: 1.7, color: "#555", marginBottom: 16 }}>
+                  <p style={{ fontSize: 15, lineHeight: 1.7, color: "#333", marginBottom: 16 }}>
                     In 2026, Americans directly felt government institutions fail them, and started acting on that distrust themselves.
                   </p>
                   <ul className="bullet-list">
@@ -160,12 +160,12 @@ export default function Trend2Page() {
             <ScrollReveal>
               <div className="two-col-layout">
                 <div>
-                  <h3 className="serif" style={{ fontSize: "clamp(22px, 2.5vw, 30px)", fontWeight: 600, lineHeight: 1.2, color: "#000" }}>
+                  <h3 style={{ fontSize: "clamp(22px, 2.5vw, 30px)", fontWeight: 600, lineHeight: 1.2, color: "#000" }}>
                     Financial Security Under New Pressure
                   </h3>
                 </div>
                 <div>
-                  <p style={{ fontSize: 15, lineHeight: 1.7, color: "#555", marginBottom: 16 }}>
+                  <p style={{ fontSize: 15, lineHeight: 1.7, color: "#333", marginBottom: 16 }}>
                     Tariffs, housing costs, and job insecurity squeezed household finances in 2026, and people can now name exactly why.
                   </p>
                   <ul className="bullet-list">
@@ -181,12 +181,12 @@ export default function Trend2Page() {
             <ScrollReveal>
               <div className="two-col-layout">
                 <div>
-                  <h3 className="serif" style={{ fontSize: "clamp(22px, 2.5vw, 30px)", fontWeight: 600, lineHeight: 1.2, color: "#000" }}>
+                  <h3 style={{ fontSize: "clamp(22px, 2.5vw, 30px)", fontWeight: 600, lineHeight: 1.2, color: "#000" }}>
                     Rerouting Where Trust is Placed
                   </h3>
                 </div>
                 <div>
-                  <p style={{ fontSize: 15, lineHeight: 1.7, color: "#555", marginBottom: 16 }}>
+                  <p style={{ fontSize: 15, lineHeight: 1.7, color: "#333", marginBottom: 16 }}>
                     As trust in online information collapsed, people rerouted who and what they trust instead.
                   </p>
                   <ul className="bullet-list">

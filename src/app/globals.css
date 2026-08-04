@@ -148,6 +148,11 @@ body {
   height: 300px;
 }
 
+.flip-card-wrapper:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 2px;
+}
+
 .flip-card-inner {
   position: relative;
   width: 100%;
@@ -451,7 +456,7 @@ body {
 
 .footer-brand-sub {
   font-size: 12px;
-  color: rgba(255,255,255,0.45);
+  color: rgba(255,255,255,0.55);
   margin-top: 6px;
   display: block;
   letter-spacing: 0.02em;
@@ -459,7 +464,7 @@ body {
 
 .footer-copy {
   font-size: 12px;
-  color: rgba(255,255,255,0.45);
+  color: rgba(255,255,255,0.55);
   text-align: right;
 }
 
@@ -468,10 +473,60 @@ body {
   margin-top: 20px;
   padding-top: 16px;
   font-size: 11px;
-  color: rgba(255,255,255,0.28);
+  color: rgba(255,255,255,0.35);
   max-width: 680px;
   line-height: 1.7;
 }
+
+/* ─── Hero gradient animation ────────────────────────────────── */
+@keyframes hero-gradient {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.hero-gradient {
+  background: linear-gradient(-45deg, #000000, #0f0025, #000000, #1a0038);
+  background-size: 400% 400%;
+  animation: hero-gradient 15s ease infinite;
+}
+
+/* ─── Jumplink bounce ────────────────────────────────────────── */
+@keyframes bounce-subtle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.jumplink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  animation: bounce-subtle 2.5s ease-in-out infinite;
+  transition: color 0.28s var(--ease);
+}
+.jumplink:hover { color: #fff; }
+
+/* ─── Primary CTA button ─────────────────────────────────────── */
+.btn-primary {
+  display: inline-block;
+  padding: 12px 24px;
+  background: var(--purple);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  transition: background 0.28s var(--ease);
+  cursor: pointer;
+  border: none;
+}
+.btn-primary:hover { background: var(--purple-dk); }
 
 /* ─── Accessibility: prefers-reduced-motion ───────────────────────── */
 @media (prefers-reduced-motion: reduce) {
@@ -488,4 +543,6 @@ body {
   .flip-card-inner {
     transition: none;
   }
+  .hero-gradient { animation: none; }
+  .jumplink { animation: none; }
 }

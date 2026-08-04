@@ -85,7 +85,7 @@ export default function Timeline({ nodes }: TimelineProps) {
                 style={{
                   fontSize: 13,
                   fontWeight: 700,
-                  color: isActive ? "#A100FF" : "#767676",
+                  color: isActive ? "#A100FF" : "#555",
                   marginTop: 12,
                   transition: "color 0.28s cubic-bezier(0.4,0,0.2,1)",
                   whiteSpace: "nowrap",
@@ -98,7 +98,7 @@ export default function Timeline({ nodes }: TimelineProps) {
               <span
                 style={{
                   fontSize: 12,
-                  color: "#AAAAAA",
+                  color: "#555",
                   marginTop: 4,
                   textAlign: "center",
                   maxWidth: 140,

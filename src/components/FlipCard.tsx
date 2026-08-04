@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState } from "react";
 
 interface FlipCardProps {
   number: string;
@@ -10,28 +10,28 @@ interface FlipCardProps {
 
 export default function FlipCard({ number, title, body }: FlipCardProps) {
   const [flipped, setFlipped] = useState(false);
-  const cardRef = useRef<HTMLButtonElement>(null);
-
-  const toggle = useCallback(() => setFlipped((f) => !f), []);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
-      toggle();
+      setFlipped((f) => !f);
     }
   };
 
   return (
-    <div className="flip-card-wrapper">
-      <button
-        ref={cardRef}
-        className={`flip-card-inner${flipped ? " flipped" : ""}`}
-        onClick={toggle}
-        onKeyDown={handleKeyDown}
-        aria-pressed={flipped}
-        aria-label={flipped ? `${title} — press to flip back` : `${title} — press to reveal`}
-        style={{ background: "none", border: "none", padding: 0, cursor: "pointer", width: "100%", textAlign: "left" }}
-      >
+    <div
+      className="flip-card-wrapper"
+      onMouseEnter={() => setFlipped(true)}
+      onMouseLeave={() => setFlipped(false)}
+      onClick={() => setFlipped((f) => !f)}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+      role="button"
+      aria-pressed={flipped}
+      aria-label={flipped ? `${title} — activate to flip back` : `${title} — hover or activate to read`}
+      style={{ cursor: "pointer", outline: "none" }}
+    >
+      <div className={`flip-card-inner${flipped ? " flipped" : ""}`}>
         {/* Front face */}
         <div
           className="flip-card-face"
@@ -56,7 +56,6 @@ export default function FlipCard({ number, title, body }: FlipCardProps) {
             {number}
           </span>
           <h3
-            className="serif"
             style={{
               fontSize: 22,
               fontWeight: 600,
@@ -81,7 +80,7 @@ export default function FlipCard({ number, title, body }: FlipCardProps) {
               marginBottom: 0,
             }}
           >
-            Click to read →
+            Hover to read →
           </p>
         </div>
 
@@ -103,12 +102,23 @@ export default function FlipCard({ number, title, body }: FlipCardProps) {
               textTransform: "uppercase",
               letterSpacing: "0.12em",
               color: "#A100FF",
-              marginBottom: 16,
+              marginBottom: 12,
               display: "block",
             }}
           >
             {number}
           </span>
+          <h3
+            style={{
+              fontSize: 15,
+              fontWeight: 700,
+              color: "#000",
+              lineHeight: 1.3,
+              marginBottom: 14,
+            }}
+          >
+            {title}
+          </h3>
           <p
             style={{
               fontSize: 13,
@@ -119,21 +129,8 @@ export default function FlipCard({ number, title, body }: FlipCardProps) {
           >
             {body}
           </p>
-          <p
-            style={{
-              fontSize: 10,
-              fontWeight: 600,
-              textTransform: "uppercase",
-              letterSpacing: "0.1em",
-              color: "#AAAAAA",
-              marginTop: "auto",
-              paddingTop: 16,
-            }}
-          >
-            Click to flip back
-          </p>
         </div>
-      </button>
+      </div>
     </div>
   );
 }
