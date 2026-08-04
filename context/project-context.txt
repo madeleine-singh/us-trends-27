@@ -1,0 +1,76 @@
+PROJECT CONTEXT: US Trends 2027 Microsite
+==========================================
+
+LAST UPDATED: July 2026
+
+
+WHAT THIS IS
+------------
+A microsite presenting a US point of view on two national trends for 2027. Produced by Accenture Song's Design & Digital Products (D&DP) practice.
+
+The site is used in two modes:
+- Live presentation to an internal Accenture designer audience, walked through during a session
+- Async reference artifact shared after the session for others to explore on their own
+
+It is explicitly not part of the official Accenture Life Trends report. The standard disclaimer is: "inspired by but developed independently of Accenture's annual Life Trends report." 
+
+
+AUDIENCE
+--------
+Internal Accenture designers, consultants, and leaders. Assumes familiarity with design practice vocabulary. Tone is editorial and confident — not explanatory, not consultant-heavy, not bullet-point strategy.
+
+
+RESEARCH APPROACH
+-----------------
+The two national trends were built bottom-up, not assumed top-down. The process had three stages:
+
+1. Regional evidence collection: Five US regions (Northeast, Midwest, DC, South, West) each contributed two trend observations grounded in local qualitative research, cultural observation, and behavioral signal-tracking.
+
+2. Disaggregation: The ten regional trends were broken into their underlying signals, patterns, and tensions rather than treated as conclusions.
+
+3. Reassembly: Signals that recurred across enough regions to represent a genuinely national pattern — not a coastal export — were reassembled into the two national trends.
+
+The goal was geographic breadth, honesty, and relevancy.
+
+
+SITE PAGES AND WHAT THEY CONTAIN
+---------------------------------
+
+Content for each page can be found in the "pages" folder.
+
+HOME
+Entry point. Introduces the project, its origin (D&DP practice, US regional research), and its relationship to the official Life Trends report. Links out to both trends, the methodology, and the regional evidence base.
+
+TREND 1 / TREND 2 (identical structure)
+Each trend page contains:
+- A headline and core thought (2-3 sentence framing of the trend)
+- A timeline showing how the trend evolved from 2023 through a 2027 projection
+- A deep-dive prose section: what was observed across the US in 2026, the underlying signals and pattern
+- "What to Expect in 2027": forward-looking narrative
+- "What This Means for Brands and Designers": 6 interactive flip cards, each with a title on the front and an explanation on the back
+
+METHODOLOGY
+Explains the three-stage research process (regional collection, disaggregation, reassembly). Emphasizes that the national trends were earned from geographic breadth, not projected from coastal defaults. This 
+
+REGIONAL TRENDS
+Shows the ten source trends across five regions: Midwest, Northeast, DC, South, and West.
+
+
+FORMATTING AND INTERACTION CHOICES
+-----------------------------------
+
+HOME PAGE CARDS
+The home page uses a card grid as the primary navigation into the site. Two larger trend cards (Trend 1, Trend 2) and two smaller utility cards (Methodology, Regional Trends). Each card has an eyebrow label, a title, a short description, and a text CTA link. The home page should orient the viewer and let them self-navigate, not present all content at once.
+
+FLIP CARDS (brand/designer implications)
+Each trend's implications section uses interactive flip cards. Front face shows a numbered eyebrow and the implication title. Back face shows the explanation. Cards flip on click. This was an explicit format request — implications should be revealed progressively, not listed all at once. There are 6 flip cards per trend (12 total). 
+
+TIMELINE
+Each trend page has a horizontal timeline with three nodes covering 2023-2025, 2026, and 2027. Each node has a year label, a short sublabel, and a tooltip with extended content that appears on interaction. The timeline shows how the trend evolved over time and where it is heading — it is not decorative.
+
+
+
+CONTENT STANDARDS
+-----------------
+- Trend names are proper nouns. Always: "Signed by Yours Truly" and "Give Me the Receipts" 
+- No em-dashes. No hedging language. No AI-sounding qualifiers.
