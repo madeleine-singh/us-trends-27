@@ -76,7 +76,7 @@ export default function HomePage() {
                     culture is no longer scarce. A credible, self-authored point of view is.
                   </p>
                 </div>
-                <span className="cta-label" style={{ color: "#A100FF" }}>
+                <span className="cta-label" style={{ color: "#A100FF", marginTop: 16 }}>
                   Read trend →
                 </span>
               </div>
@@ -98,7 +98,7 @@ export default function HomePage() {
                     re-proven over time.
                   </p>
                 </div>
-                <span className="cta-label" style={{ color: "#A100FF" }}>
+                <span className="cta-label" style={{ color: "#A100FF", marginTop: 16 }}>
                   Read trend →
                 </span>
               </div>
@@ -118,7 +118,7 @@ export default function HomePage() {
                     How regional signals were disaggregated and reassembled into these national trends.
                   </p>
                 </div>
-                <span className="cta-label">Explore →</span>
+                <span className="cta-label" style={{ marginTop: 16 }}>Explore →</span>
               </div>
             </Link>
           </ScrollReveal>
@@ -136,7 +136,7 @@ export default function HomePage() {
                     The five US regions whose observations ground these national findings.
                   </p>
                 </div>
-                <span className="cta-label">Explore →</span>
+                <span className="cta-label" style={{ marginTop: 16 }}>Explore →</span>
               </div>
             </Link>
           </ScrollReveal>

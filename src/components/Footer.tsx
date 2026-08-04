@@ -2,8 +2,8 @@ export default function Footer() {
   return (
     <footer className="footer on-dark" role="contentinfo">
       <div className="container">
-        <div className="footer-inner">
-          <div>
+        <div className="footer-inner" style={{ position: "relative", display: "flex", alignItems: "flex-end", justifyContent: "center", width: "100%" }}>
+          <div style={{ position: "absolute", left: 0 }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/brand/Acc_Song_SvcMrk_White_Solid_RGB.svg"

@@ -3,7 +3,7 @@
 /* Map next/font CSS variables to Tailwind font utilities */
 @theme inline {
   --font-sans: var(--font-dm-sans);
-  --font-serif: var(--font-cormorant);
+  --font-serif: var(--font-dm-sans);
 }
 
 /* ─── Design tokens ───────────────────────────────────────────────── */
@@ -70,10 +70,9 @@ body {
 .eyebrow {
   display: block;
   font-family: var(--font-sans), system-ui, sans-serif;
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.04em;
   color: var(--purple);
   margin-bottom: 16px;
 }
