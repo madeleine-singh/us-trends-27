@@ -62,13 +62,13 @@ Content for each page lives in `page-content/`.
 | Trend 1 — Signed by Yours Truly | Headline, core thought, timeline (2023–2027), deep-dive prose, "What to Expect in 2027," 6 flip cards |
 | Trend 2 — Give Me the Receipts | Same structure as Trend 1 |
 | Methodology | Explains the three-stage research process (regional collection, disaggregation, reassembly) |
-| Regional Trends | Ten source trends across five regions: Midwest, Northeast, DC, South, West |
+| Regional Trends | Eleven source trends across five regions: Midwest, Northeast, DC/AFS, South (3), West |
 
 ## Research methodology
 
 Three-stage process:
-1. **Regional evidence collection** — Five US regions (Northeast, Midwest, DC, South, West) each contributed two trend observations grounded in local qualitative research, cultural observation, and behavioral signal-tracking.
-2. **Disaggregation** — The ten regional trends were broken into underlying signals, patterns, and tensions rather than treated as conclusions.
+1. **Regional evidence collection** — Five US regions (Northeast, Midwest, DC/AFS, South, West) each contributed trend observations grounded in local qualitative research, cultural observation, and behavioral signal-tracking. South contributed three; all others contributed two (eleven total).
+2. **Disaggregation** — The eleven regional trends were broken into underlying signals, patterns, and tensions rather than treated as conclusions.
 3. **Reassembly** — Signals recurring across enough regions to represent a genuinely national pattern were reassembled into the two national trends.
 
 Goal: geographic breadth, honesty, and relevancy. National trends were earned from geographic breadth, not projected from coastal defaults.

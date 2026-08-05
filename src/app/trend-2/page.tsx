@@ -4,7 +4,7 @@ import ScrollReveal from "@/components/ScrollReveal";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Give Me the Receipts!!! — US Trends 2027",
+  title: "Give Me the Receipts — US Trends 2027",
   description:
     "Consumers are re-evaluating their relationships with brands, institutions, and individuals. Trust isn't given anymore; it must be earned, with receipts, and re-proven over time.",
 };
@@ -76,7 +76,7 @@ export default function Trend2Page() {
         <div className="container">
           <span className="eyebrow">2027 Trend · 02</span>
           <h1 className="h1-display" style={{ color: "#fff", marginBottom: 0, maxWidth: 820 }}>
-            Give Me the Receipts!!!
+            Give Me the Receipts
           </h1>
           <p className="core-thought">
             Consumers are re-evaluating their relationships with brands, institutions, and
@@ -236,11 +236,11 @@ export default function Trend2Page() {
         <div className="container">
           <ScrollReveal>
             <span className="eyebrow">Implications</span>
-            <h2 className="h2-section" style={{ marginBottom: 8 }}>
+            <h2 className="h2-section" style={{ marginBottom: 20 }}>
               What This Means for Brands and Designers
             </h2>
-            <p style={{ fontSize: 13, color: "#AAAAAA", marginTop: 12 }}>
-              Click any card to read more.
+            <p style={{ fontSize: 13, color: "#AAAAAA" }}>
+              Hover any card to read more.
             </p>
           </ScrollReveal>
 

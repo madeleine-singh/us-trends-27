@@ -240,15 +240,15 @@ export default function Trend1Page() {
         <div className="container">
           <ScrollReveal>
             <span className="eyebrow">Implications</span>
-            <h2 className="h2-section" style={{ marginBottom: 8 }}>
+            <h2 className="h2-section" style={{ marginBottom: 20 }}>
               What This Means for Brands and Designers
             </h2>
-            <p style={{ fontSize: 13, color: "#AAAAAA", marginTop: 12 }}>
-              Hover any card to read more.
-            </p>
-            <p style={{ fontSize: 15, lineHeight: 1.7, color: "#555", maxWidth: 620, marginTop: 16 }}>
+            <p style={{ fontSize: 15, lineHeight: 1.7, color: "#555", maxWidth: 620 }}>
               The shift toward authorship specificity creates a clear challenge. Conviction, craft
               expertise, and genuine community become the new points of differentiation.
+            </p>
+            <p style={{ fontSize: 13, color: "#AAAAAA", marginTop: 16 }}>
+              Hover any card to read more.
             </p>
           </ScrollReveal>
 

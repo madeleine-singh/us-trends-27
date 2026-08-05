@@ -67,7 +67,7 @@ export default function Nav() {
           <nav aria-label="Main" className="on-dark">
             <ul
               role="list"
-              style={{ display: "flex", gap: 32, listStyle: "none", margin: 0, padding: 0 }}
+              style={{ gap: 32, listStyle: "none", margin: 0, padding: 0 }}
               className="hidden md:flex"
             >
               {links.map((link) => {

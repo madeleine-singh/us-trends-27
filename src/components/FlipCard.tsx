@@ -44,7 +44,7 @@ export default function FlipCard({ number, title, body }: FlipCardProps) {
         >
           <span
             style={{
-              fontSize: 10,
+              fontSize: 14,
               fontWeight: 600,
               textTransform: "uppercase",
               letterSpacing: "0.12em",
@@ -75,7 +75,7 @@ export default function FlipCard({ number, title, body }: FlipCardProps) {
               fontWeight: 600,
               textTransform: "uppercase",
               letterSpacing: "0.1em",
-              color: "rgba(255,255,255,0.45)",
+              color: "rgba(255,255,255,0.65)",
               marginTop: 20,
               marginBottom: 0,
             }}

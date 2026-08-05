@@ -16,3 +16,5 @@ on re-run, and automatically at the start of any task (CLAUDE.md pre-flight).
 |---|---|---|---|---|
 | 2026-07-31 | project-context.txt | context/ | linked | context/project-context.txt |
 | 2026-07-31 | design.md | design/ | linked | design/design.md |
+| 2026-08-05 | Trends 2027 Pitches Combined.pdf | materials/ | cataloged | materials/Trends 2027 Pitches Combined.pdf |
+| 2026-08-05 | Aug5 Microsite Feedback.docx | context/ | linked | context/Aug5 Microsite Feedback.docx |

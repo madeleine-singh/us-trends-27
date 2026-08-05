@@ -37,7 +37,7 @@ export default function HomePage() {
           }}
         >
           <div className="container">
-            <span className="eyebrow">US Life Trends POV 2027</span>
+            <span className="eyebrow">D&amp;DP News &amp; Trends · US Life Trends POV 2027</span>
             <h1 className="h1-home" style={{ color: "#fff", marginBottom: 28, maxWidth: 820 }}>
               The forces reshaping how people live, choose, and connect
             </h1>
@@ -60,7 +60,7 @@ export default function HomePage() {
       </section>
 
       {/* ── Trend cards ───────────────────────────────────────────── */}
-      <section id="trends" style={{ background: "#D8D8D8", paddingTop: "clamp(40px, 5vw, 64px)" }}>
+      <section id="trends" style={{ background: "#D8D8D8", paddingTop: "clamp(40px, 5vw, 64px)", paddingBottom: "clamp(40px, 5vw, 64px)" }}>
         <div className="container">
           <ScrollReveal>
             <span className="eyebrow" style={{ color: "#767676" }}>US POV</span>
@@ -94,7 +94,7 @@ export default function HomePage() {
                   <div>
                     <span className="eyebrow">Trend 02</span>
                     <h2 className="h3-card-large" style={{ color: "#fff", margin: "0 0 16px" }}>
-                      Give Me the Receipts!!!
+                      Give Me the Receipts
                     </h2>
                     <p style={{ color: "rgba(255,255,255,0.65)", fontSize: 15, lineHeight: 1.65, maxWidth: 440 }}>
                       Consumers are re-evaluating their relationships with brands, institutions, and

@@ -2,8 +2,8 @@ export default function Footer() {
   return (
     <footer className="footer on-dark" role="contentinfo">
       <div className="container">
-        <div className="footer-inner" style={{ position: "relative", display: "flex", alignItems: "flex-end", justifyContent: "center", width: "100%" }}>
-          <div style={{ position: "absolute", left: 0 }}>
+        <div className="footer-inner">
+          <div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/brand/Acc_Song_SvcMrk_White_Solid_RGB.svg"
@@ -14,7 +14,7 @@ export default function Footer() {
           </div>
           <p className="footer-copy">© 2026 Accenture. All rights reserved.</p>
         </div>
-        <p style={{ fontSize: 11, color: "rgba(255,255,255,0.45)", marginTop: 16, lineHeight: 1.7 }}>
+        <p style={{ fontSize: 11, color: "rgba(255,255,255,0.55)", marginTop: 16, lineHeight: 1.7 }}>
           Authored by D&amp;DP News &amp; Trends team: Audrey Cheng, Melanie Kim, Madeleine Singh, Sophia Ng, Alexandria Jackson, &amp; Savannah Robinson
         </p>
         <p className="footer-disclaimer">
