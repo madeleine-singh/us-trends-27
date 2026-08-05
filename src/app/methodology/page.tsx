@@ -36,7 +36,7 @@ const regions: Region[] = [
   },
   {
     name: "Midwest",
-    ambassadors: "Madeleine Singh & Sophia Ng",
+    ambassadors: "Madeleine Singh, Sophia Ng",
     trends: [
       {
         title: "Clocking Out of AI",
@@ -49,30 +49,6 @@ const regions: Region[] = [
         description:
           "Urban cultural convergence is no longer a background condition — it's something people can see and name in real time. The same brands, aesthetics, and infrastructure are arriving in Midwest cities simultaneously, and residents are starting to ask what it costs to live somewhere that could be anywhere.",
         pdf: "/regional-trends/midwest-02-copy-paste-cities.pdf",
-      },
-    ],
-  },
-  {
-    name: "South",
-    ambassadors: "Alex Kim, Andy Simpson, Jacqueline Walsh",
-    trends: [
-      {
-        title: "Demise of the Monoculture",
-        description:
-          "The collapse of a shared cultural reality has fractured common ground into a constellation of niche subcultures. Community no longer forms around shared experience — it assembles around shared identity, with the civic costs of that atomization only now becoming visible.",
-        pdf: "/regional-trends/south-01-demise-of-the-monoculture.pdf",
-      },
-      {
-        title: "Neu-Urbanism and Agrario-Curiosity",
-        description:
-          "The vision of the sleek techno-city is out of favor. People want dense, walkable communities and connection to the natural world simultaneously. The solar-punk aesthetic and the rise of community gardens reflect a genuine desire to reconcile urban life with living things.",
-        pdf: "/regional-trends/south-02-neu-urbanism-and-agrario-curiosity.pdf",
-      },
-      {
-        title: "Technocratic Backlash and the Data Center War",
-        description:
-          "Growing hostility toward an unaccountable tech industry is coalescing around a concrete flashpoint: data centers. Hastily built, environmentally costly, and locally disruptive, they have become the symbol of tech's indifference to the communities it operates in.",
-        pdf: "/regional-trends/south-03-technocratic-backlash-and-the-data-center-war.pdf",
       },
     ],
   },
@@ -109,6 +85,30 @@ const regions: Region[] = [
         description:
           "As legacy institutions shed seasoned voices and governments challenge traditional media, individuals — creators, specialists, independent voices — are becoming the primary discovery and trust channels. The institution is losing the premium it once charged for credibility.",
         pdf: "/regional-trends/dc-02-individuals-over-institutions-authenticity-premium.pdf",
+      },
+    ],
+  },
+  {
+    name: "South",
+    ambassadors: "Alex Kim, Andy Simpson, Jacqueline Walsh",
+    trends: [
+      {
+        title: "Demise of the Monoculture",
+        description:
+          "The collapse of a shared cultural reality has fractured common ground into a constellation of niche subcultures. Community no longer forms around shared experience — it assembles around shared identity, with the civic costs of that atomization only now becoming visible.",
+        pdf: "/regional-trends/south-01-demise-of-the-monoculture.pdf",
+      },
+      {
+        title: "Neu-Urbanism and Agrario-Curiosity",
+        description:
+          "The vision of the sleek techno-city is out of favor. People want dense, walkable communities and connection to the natural world simultaneously. The solar-punk aesthetic and the rise of community gardens reflect a genuine desire to reconcile urban life with living things.",
+        pdf: "/regional-trends/south-02-neu-urbanism-and-agrario-curiosity.pdf",
+      },
+      {
+        title: "Technocratic Backlash and the Data Center War",
+        description:
+          "Growing hostility toward an unaccountable tech industry is coalescing around a concrete flashpoint: data centers. Hastily built, environmentally costly, and locally disruptive, they have become the symbol of tech's indifference to the communities it operates in.",
+        pdf: "/regional-trends/south-03-technocratic-backlash-and-the-data-center-war.pdf",
       },
     ],
   },
@@ -171,47 +171,43 @@ export default function MethodologyPage() {
                 flatten or miss entirely.
               </p>
 
-              {/* Ambassador names */}
-              <div style={{ marginTop: 28, display: "flex", flexDirection: "column", gap: 6 }}>
-                {regions.map((r) => (
-                  <p key={r.name} style={{ fontSize: 13, lineHeight: 1.6, color: "#555" }}>
-                    <strong style={{ color: "#000" }}>{r.name}:</strong> {r.ambassadors}
-                  </p>
-                ))}
-              </div>
-
               {/* Regional evidence table */}
               <div style={{ marginTop: 40 }}>
                 <div className="region-grid">
                   {regions.map((region, ri) => (
                     <ScrollReveal key={region.name} delay={ri * 60}>
                       <div className="region-card region-card-active">
-                        <h4 style={{ fontSize: 18, fontWeight: 600, color: "#000", marginBottom: 4 }}>
-                          {region.name}
-                        </h4>
-                        <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                        <div>
+                          <h4 style={{ fontSize: 18, fontWeight: 600, color: "#000", marginBottom: 6 }}>
+                            {region.name}
+                          </h4>
+                          <p style={{ fontSize: 12, color: "#767676", lineHeight: 1.5, margin: 0 }}>
+                            {region.ambassadors}
+                          </p>
+                        </div>
+                        <div style={{ display: "flex", flexDirection: "column" }}>
                           {region.trends.map((trend, ti) => (
                             <button
                               key={ti}
                               onClick={() => openOverlay(region.name, trend)}
+                              className="region-trend-btn"
                               style={{
                                 background: "none",
                                 border: "none",
-                                padding: "16px 0",
+                                padding: "14px 8px",
+                                margin: "0 -8px",
                                 cursor: "pointer",
                                 textAlign: "left",
-                                width: "100%",
-                                borderBottom: ti < region.trends.length - 1 ? "1px solid #EBEBEB" : "none",
+                                width: "calc(100% + 16px)",
+                                borderTop: "1px solid #EBEBEB",
+                                transition: "background 0.2s var(--ease)",
                               }}
                               aria-label={`View trend: ${trend.title}`}
                             >
-                              <span style={{ fontSize: 15, fontWeight: 600, color: "#000", lineHeight: 1.3, display: "block" }}>
+                              <span style={{ fontSize: 14, fontWeight: 600, color: "#000", lineHeight: 1.3, display: "block" }}>
                                 {trend.title}
                               </span>
-                              <span style={{ fontSize: 13, color: "#555", lineHeight: 1.5, display: "block", marginTop: 6 }}>
-                                {trend.description}
-                              </span>
-                              <span style={{ display: "block", fontSize: 11, color: "#A100FF", marginTop: 8 }}>
+                              <span style={{ display: "block", fontSize: 11, color: "#A100FF", marginTop: 6 }}>
                                 View slide →
                               </span>
                             </button>
@@ -324,7 +320,7 @@ export default function MethodologyPage() {
             {/* Description footer */}
             <div style={{ padding: "16px 28px", borderTop: "1px solid #EBEBEB", background: "#FAFAFA" }}>
               <p style={{ fontSize: 14, lineHeight: 1.7, color: "#444", margin: 0 }}>
-                {overlay.trend.description}
+                <strong>Summary:</strong> {overlay.trend.description}
               </p>
             </div>
           </div>

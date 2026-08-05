@@ -341,23 +341,31 @@ body {
 /* ─── Region grid ────────────────────────────────────────────────── */
 .region-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 2px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
   margin-top: 48px;
 }
-@media (max-width: 1024px) { .region-grid { grid-template-columns: repeat(3, 1fr); } }
-@media (max-width: 640px)  { .region-grid { grid-template-columns: 1fr; } }
+@media (max-width: 1080px) { .region-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px)  { .region-grid { grid-template-columns: 1fr; } }
 
 .region-card {
   background: var(--white);
-  padding: 36px 28px;
-  min-height: 220px;
+  padding: 32px 28px;
   display: flex;
   flex-direction: column;
   gap: 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.06);
+  transition: box-shadow 0.28s var(--ease), transform 0.28s var(--ease);
+}
+.region-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.09), 0 12px 32px rgba(0,0,0,0.09);
+  transform: translateY(-2px);
 }
 .region-card-active { border-top: 3px solid var(--purple); }
-.region-card-placeholder { border-top: 3px solid var(--gray-200); }
+
+.region-trend-btn:hover {
+  background: var(--gray-50);
+}
 
 .trend-item {
   background: var(--gray-50);

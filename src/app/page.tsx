@@ -38,12 +38,12 @@ export default function HomePage() {
         >
           <div className="container">
             <span className="eyebrow">D&amp;DP News &amp; Trends · US Life Trends POV 2027</span>
-            <h1 className="h1-home" style={{ color: "#fff", marginBottom: 28, maxWidth: 820 }}>
+            <h1 className="h1-home" style={{ color: "#fff", marginBottom: 28, maxWidth: 1000 }}>
               The forces reshaping how people live, choose, and connect
             </h1>
             <p
               className="body-lead"
-              style={{ color: "rgba(255,255,255,0.72)", maxWidth: 560 }}
+              style={{ color: "rgba(255,255,255,0.72)", maxWidth: 680 }}
             >
               Built from research across the US, these trends reveal how people&apos;s behaviors
               and attitudes are evolving alongside shifts in business, technology, and society.
