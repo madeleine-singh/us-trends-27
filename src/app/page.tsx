@@ -15,7 +15,6 @@ export default function HomePage() {
       <section
         className="on-dark hero-gradient"
         style={{
-          height: "100vh",
           paddingTop: "var(--nav-h)",
           position: "relative",
           overflow: "hidden",

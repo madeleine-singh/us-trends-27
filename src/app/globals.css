@@ -493,6 +493,7 @@ body {
   background: linear-gradient(-45deg, #000000, #0f0025, #000000, #1a0038);
   background-size: 400% 400%;
   animation: hero-gradient 15s ease infinite;
+  height: calc(100vh - var(--nav-h));
 }
 
 /* ─── Jumplink bounce ────────────────────────────────────────── */
