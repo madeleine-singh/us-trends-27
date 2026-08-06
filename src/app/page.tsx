@@ -38,7 +38,7 @@ export default function HomePage() {
           <div className="container">
             <span className="eyebrow">D&amp;DP News &amp; Trends · US Life Trends POV 2027</span>
             <h1 className="h1-home" style={{ color: "#fff", marginBottom: 28, maxWidth: 1000 }}>
-              The forces reshaping how people live, choose, and connect
+              The forces reshaping how people live
             </h1>
             <p
               className="body-lead"
@@ -51,7 +51,7 @@ export default function HomePage() {
         </div>
 
         {/* Jumplink */}
-        <div className="container" style={{ paddingBottom: "clamp(40px, 5vw, 60px)", display: "flex", justifyContent: "center" }}>
+        <div className="container" style={{ paddingBottom: "clamp(40px, 5vw, 60px)", display: "flex", justifyContent: "center", flexShrink: 0 }}>
           <a href="#trends" className="jumplink">
             Explore the trends ↓
           </a>
