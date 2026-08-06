@@ -278,7 +278,8 @@ export default function MethodologyPage() {
             className="overlay-panel"
             style={{
               width: "min(1200px, 96vw)",
-              maxHeight: "92vh",
+              maxWidth: "none",
+              maxHeight: "calc(100vh - var(--nav-h) - 48px)",
               display: "flex",
               flexDirection: "column",
               padding: 0,
