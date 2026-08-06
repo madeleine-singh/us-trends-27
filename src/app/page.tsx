@@ -15,7 +15,7 @@ export default function HomePage() {
       <section
         className="on-dark hero-gradient"
         style={{
-          minHeight: "100vh",
+          height: "100vh",
           paddingTop: "var(--nav-h)",
           position: "relative",
           overflow: "hidden",
@@ -52,7 +52,7 @@ export default function HomePage() {
         </div>
 
         {/* Jumplink */}
-        <div className="container" style={{ paddingBottom: "clamp(40px, 5vw, 60px)" }}>
+        <div className="container" style={{ paddingBottom: "clamp(40px, 5vw, 60px)", display: "flex", justifyContent: "center" }}>
           <a href="#trends" className="jumplink">
             Explore the trends ↓
           </a>

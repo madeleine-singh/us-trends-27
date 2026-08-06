@@ -449,7 +449,7 @@ body {
 .footer {
   background: #000;
   border-top: 1px solid #1c1c1c;
-  padding: clamp(40px, 5vw, 64px) 0;
+  padding: clamp(24px, 3vw, 36px) 0;
 }
 
 .footer-inner {
@@ -505,7 +505,7 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;

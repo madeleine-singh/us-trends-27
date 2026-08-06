@@ -97,7 +97,7 @@ export default function FlipCard({ number, title, body }: FlipCardProps) {
         >
           <span
             style={{
-              fontSize: 10,
+              fontSize: 14,
               fontWeight: 600,
               textTransform: "uppercase",
               letterSpacing: "0.12em",

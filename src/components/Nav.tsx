@@ -63,12 +63,16 @@ export default function Nav() {
             />
           </Link>
 
-          {/* Desktop nav */}
-          <nav aria-label="Main" className="on-dark">
+          {/* Desktop nav — absolutely centered in header */}
+          <nav
+            aria-label="Main"
+            className="on-dark"
+            style={{ position: "absolute", left: "50%", transform: "translateX(-50%)" }}
+          >
             <ul
               role="list"
               style={{ gap: 32, listStyle: "none", margin: 0, padding: 0 }}
-              className="hidden md:flex"
+              className="hidden lg:flex"
             >
               {links.map((link) => {
                 const active = pathname === link.href;
@@ -98,61 +102,63 @@ export default function Nav() {
             </ul>
           </nav>
 
-          {/* Hamburger — mobile/tablet */}
-          <button
-            aria-label={open ? "Close menu" : "Open menu"}
-            aria-expanded={open}
-            aria-controls="mobile-menu"
-            onClick={() => setOpen(!open)}
-            className="md:hidden"
-            style={{
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              padding: 8,
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              width: 36,
-              height: 36,
-              gap: 0,
-              position: "relative",
-            }}
-          >
-            <span
+          {/* Hamburger — mobile/tablet only */}
+          <div className="lg:hidden">
+            <button
+              aria-label={open ? "Close menu" : "Open menu"}
+              aria-expanded={open}
+              aria-controls="mobile-menu"
+              onClick={() => setOpen(!open)}
               style={{
-                display: "block",
-                width: 20,
-                height: 1.5,
-                background: "#fff",
-                position: "absolute",
-                transition: "transform 0.28s cubic-bezier(0.4,0,0.2,1), top 0.28s cubic-bezier(0.4,0,0.2,1)",
-                top: open ? "50%" : "calc(50% - 5px)",
-                transform: open ? "translateY(-50%) rotate(45deg)" : "translateY(0)",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                padding: 8,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                width: 36,
+                height: 36,
+                gap: 0,
+                position: "relative",
               }}
-            />
-            <span
-              style={{
-                display: "block",
-                width: 20,
-                height: 1.5,
-                background: "#fff",
-                position: "absolute",
-                transition: "transform 0.28s cubic-bezier(0.4,0,0.2,1), top 0.28s cubic-bezier(0.4,0,0.2,1)",
-                top: open ? "50%" : "calc(50% + 5px)",
-                transform: open ? "translateY(-50%) rotate(-45deg)" : "translateY(0)",
-              }}
-            />
-          </button>
+            >
+              <span
+                style={{
+                  display: "block",
+                  width: 20,
+                  height: 1.5,
+                  background: "#fff",
+                  position: "absolute",
+                  transition: "transform 0.28s cubic-bezier(0.4,0,0.2,1), top 0.28s cubic-bezier(0.4,0,0.2,1)",
+                  top: open ? "50%" : "calc(50% - 5px)",
+                  transform: open ? "translateY(-50%) rotate(45deg)" : "translateY(0)",
+                }}
+              />
+              <span
+                style={{
+                  display: "block",
+                  width: 20,
+                  height: 1.5,
+                  background: "#fff",
+                  position: "absolute",
+                  transition: "transform 0.28s cubic-bezier(0.4,0,0.2,1), top 0.28s cubic-bezier(0.4,0,0.2,1)",
+                  top: open ? "50%" : "calc(50% + 5px)",
+                  transform: open ? "translateY(-50%) rotate(-45deg)" : "translateY(0)",
+                }}
+              />
+            </button>
+          </div>
         </div>
       </header>
 
-      {/* Mobile menu overlay */}
+      {/* Mobile menu overlay — mobile/tablet only */}
+      <div className="lg:hidden">
       <div
         id="mobile-menu"
         aria-hidden={!open}
-        className="on-dark md:hidden"
+        className="on-dark"
         style={{
           position: "fixed",
           top: "var(--nav-h)",
@@ -205,6 +211,7 @@ export default function Nav() {
             })}
           </ul>
         </nav>
+      </div>
       </div>
     </>
   );

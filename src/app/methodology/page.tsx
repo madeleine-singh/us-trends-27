@@ -208,7 +208,7 @@ export default function MethodologyPage() {
                                 {trend.title}
                               </span>
                               <span style={{ display: "block", fontSize: 11, color: "#A100FF", marginTop: 6 }}>
-                                View slide →
+                                View Pitch →
                               </span>
                             </button>
                           ))}
@@ -277,7 +277,7 @@ export default function MethodologyPage() {
           <div
             className="overlay-panel"
             style={{
-              width: "min(960px, 96vw)",
+              width: "min(1200px, 96vw)",
               maxHeight: "92vh",
               display: "flex",
               flexDirection: "column",
