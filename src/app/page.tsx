@@ -59,7 +59,7 @@ export default function HomePage() {
       </section>
 
       {/* ── Trend cards ───────────────────────────────────────────── */}
-      <section id="trends" style={{ background: "#D8D8D8", paddingTop: "clamp(40px, 5vw, 64px)", paddingBottom: "clamp(40px, 5vw, 64px)" }}>
+      <section id="trends" style={{ background: "#D8D8D8", paddingTop: "clamp(40px, 5vw, 64px)", paddingBottom: "clamp(40px, 5vw, 64px)", scrollMarginTop: "var(--nav-h)" }}>
         <div className="container">
           <ScrollReveal>
             <span className="eyebrow" style={{ color: "#767676" }}>US POV</span>
