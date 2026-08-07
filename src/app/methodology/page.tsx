@@ -242,6 +242,30 @@ export default function MethodologyPage() {
                 vs. signals that were traceable at a more national level, so we could better hone in
                 on patterns that would resonate across all 5 regions.
               </p>
+
+              {/* Disaggregation process images */}
+              <div className="region-grid" style={{ marginTop: 40 }}>
+                {[
+                  { src: "/methodology/disagg-1.png", alt: "Regional signals spread and organized" },
+                  { src: "/methodology/disagg-2.png", alt: "Signals grouped into emerging patterns" },
+                  { src: "/methodology/disagg-3.png", alt: "Patterns consolidated into national trends" },
+                ].map((img, i) => (
+                  <ScrollReveal key={i} delay={i * 150}>
+                    <div style={{
+                      borderTop: "3px solid var(--purple)",
+                      overflow: "hidden",
+                      boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                    }}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={img.src}
+                        alt={img.alt}
+                        style={{ width: "100%", height: 180, objectFit: "cover", display: "block" }}
+                      />
+                    </div>
+                  </ScrollReveal>
+                ))}
+              </div>
             </div>
           </ScrollReveal>
 
