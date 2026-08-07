@@ -283,6 +283,30 @@ export default function MethodologyPage() {
                 Validating that our patterns were backed by fact transformed the patterns into the two
                 US trends now presented here.
               </p>
+
+              {/* Reassembly process images */}
+              <div className="region-grid" style={{ marginTop: 40 }}>
+                {[
+                  { src: "/methodology/reassembly-1.png", alt: "Trend sourcing and evidence review" },
+                  { src: "/methodology/reassembly-2.png", alt: "Pattern validation against research" },
+                  { src: "/methodology/reassembly-3.png", alt: "Final national trends assembled" },
+                ].map((img, i) => (
+                  <ScrollReveal key={i} delay={i * 150}>
+                    <div style={{
+                      borderTop: "3px solid var(--purple)",
+                      overflow: "hidden",
+                      boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                    }}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={img.src}
+                        alt={img.alt}
+                        style={{ width: "100%", height: 180, objectFit: "cover", display: "block" }}
+                      />
+                    </div>
+                  </ScrollReveal>
+                ))}
+              </div>
             </div>
           </ScrollReveal>
         </div>
