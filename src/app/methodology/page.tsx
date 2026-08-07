@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ScrollReveal from "@/components/ScrollReveal";
 
 interface Trend {
@@ -114,8 +114,31 @@ const regions: Region[] = [
   },
 ];
 
+const step2Imgs = [
+  { src: "/methodology/disagg-1.png", alt: "Regional signals spread and organized" },
+  { src: "/methodology/disagg-2.png", alt: "Signals grouped into emerging patterns" },
+  { src: "/methodology/disagg-3.png", alt: "Patterns consolidated into national trends" },
+];
+const step3Imgs = [
+  { src: "/methodology/reassembly-1.png", alt: "Trend sourcing and evidence review" },
+  { src: "/methodology/reassembly-2.png", alt: "Pattern validation against research" },
+  { src: "/methodology/reassembly-3.png", alt: "Final national trends assembled" },
+];
+
 export default function MethodologyPage() {
   const [overlay, setOverlay] = useState<{ region: string; trend: Trend } | null>(null);
+  const [gallery, setGallery] = useState<{ srcs: typeof step2Imgs; index: number } | null>(null);
+
+  useEffect(() => {
+    if (!gallery) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft")  setGallery(g => g && g.index > 0 ? { ...g, index: g.index - 1 } : g);
+      if (e.key === "ArrowRight") setGallery(g => g && g.index < g.srcs.length - 1 ? { ...g, index: g.index + 1 } : g);
+      if (e.key === "Escape") setGallery(null);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [gallery]);
 
   const openOverlay = (region: string, trend: Trend) => setOverlay({ region, trend });
   const closeOverlay = () => setOverlay(null);
@@ -245,24 +268,26 @@ export default function MethodologyPage() {
 
               {/* Disaggregation process images */}
               <div className="region-grid" style={{ marginTop: 40 }}>
-                {[
-                  { src: "/methodology/disagg-1.png", alt: "Regional signals spread and organized" },
-                  { src: "/methodology/disagg-2.png", alt: "Signals grouped into emerging patterns" },
-                  { src: "/methodology/disagg-3.png", alt: "Patterns consolidated into national trends" },
-                ].map((img, i) => (
+                {step2Imgs.map((img, i) => (
                   <ScrollReveal key={i} delay={i * 150}>
-                    <div style={{
-                      borderTop: "3px solid var(--purple)",
-                      overflow: "hidden",
-                      boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                    }}>
+                    <button
+                      onClick={() => setGallery({ srcs: step2Imgs, index: i })}
+                      aria-label={`Open image gallery at image ${i + 1}: ${img.alt}`}
+                      style={{
+                        display: "block", width: "100%", padding: 0,
+                        background: "none", border: "none", cursor: "pointer",
+                        borderTop: "3px solid var(--purple)",
+                        overflow: "hidden",
+                        boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                      }}
+                    >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={img.src}
                         alt={img.alt}
                         style={{ width: "100%", height: 180, objectFit: "cover", display: "block" }}
                       />
-                    </div>
+                    </button>
                   </ScrollReveal>
                 ))}
               </div>
@@ -286,24 +311,26 @@ export default function MethodologyPage() {
 
               {/* Reassembly process images */}
               <div className="region-grid" style={{ marginTop: 40 }}>
-                {[
-                  { src: "/methodology/reassembly-1.png", alt: "Trend sourcing and evidence review" },
-                  { src: "/methodology/reassembly-2.png", alt: "Pattern validation against research" },
-                  { src: "/methodology/reassembly-3.png", alt: "Final national trends assembled" },
-                ].map((img, i) => (
+                {step3Imgs.map((img, i) => (
                   <ScrollReveal key={i} delay={i * 150}>
-                    <div style={{
-                      borderTop: "3px solid var(--purple)",
-                      overflow: "hidden",
-                      boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                    }}>
+                    <button
+                      onClick={() => setGallery({ srcs: step3Imgs, index: i })}
+                      aria-label={`Open image gallery at image ${i + 1}: ${img.alt}`}
+                      style={{
+                        display: "block", width: "100%", padding: 0,
+                        background: "none", border: "none", cursor: "pointer",
+                        borderTop: "3px solid var(--purple)",
+                        overflow: "hidden",
+                        boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                      }}
+                    >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={img.src}
                         alt={img.alt}
                         style={{ width: "100%", height: 180, objectFit: "cover", display: "block" }}
                       />
-                    </div>
+                    </button>
                   </ScrollReveal>
                 ))}
               </div>
@@ -371,6 +398,72 @@ export default function MethodologyPage() {
               <p style={{ fontSize: 14, lineHeight: 1.7, color: "#444", margin: 0 }}>
                 <strong>Summary:</strong> {overlay.trend.description}
               </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Image Gallery Overlay ─────────────────────────────────── */}
+      {gallery && (
+        <div
+          className="overlay-backdrop"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Image ${gallery.index + 1} of ${gallery.srcs.length}`}
+          onClick={(e) => { if (e.target === e.currentTarget) setGallery(null); }}
+        >
+          <div
+            style={{
+              width: "min(1080px, 96vw)",
+              maxWidth: "none",
+              maxHeight: "calc(100vh - var(--nav-h) - 48px)",
+              background: "#fff",
+              display: "flex",
+              flexDirection: "column",
+              position: "relative",
+              overflow: "hidden",
+            }}
+          >
+            {/* Close */}
+            <button
+              className="overlay-close"
+              onClick={() => setGallery(null)}
+              aria-label="Close gallery"
+            >
+              ×
+            </button>
+
+            {/* Image */}
+            <div style={{ flex: 1, minHeight: 0, display: "flex", alignItems: "center", justifyContent: "center", padding: "48px 40px 24px" }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={gallery.srcs[gallery.index].src}
+                alt={gallery.srcs[gallery.index].alt}
+                style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain", display: "block" }}
+              />
+            </div>
+
+            {/* Navigation */}
+            <div style={{ flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 24px", borderTop: "1px solid #EBEBEB" }}>
+              <button
+                onClick={() => setGallery(g => g ? { ...g, index: Math.max(0, g.index - 1) } : null)}
+                disabled={gallery.index === 0}
+                aria-label="Previous image"
+                style={{ background: "none", border: "none", cursor: gallery.index === 0 ? "default" : "pointer", fontSize: 20, color: gallery.index === 0 ? "#CCC" : "#000", padding: "8px 16px", lineHeight: 1 }}
+              >
+                ←
+              </button>
+              <span style={{ fontSize: 12, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "#767676" }}>
+                {gallery.index + 1} / {gallery.srcs.length}
+              </span>
+              <button
+                onClick={() => setGallery(g => g ? { ...g, index: Math.min(g.srcs.length - 1, g.index + 1) } : null)}
+                disabled={gallery.index === gallery.srcs.length - 1}
+                aria-label="Next image"
+                style={{ background: "none", border: "none", cursor: gallery.index === gallery.srcs.length - 1 ? "default" : "pointer", fontSize: 20, color: gallery.index === gallery.srcs.length - 1 ? "#CCC" : "#000", padding: "8px 16px", lineHeight: 1 }}
+              >
+                →
+              </button>
             </div>
           </div>
         </div>
