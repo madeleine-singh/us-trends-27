@@ -142,40 +142,98 @@ body {
               opacity 0.28s var(--ease);
 }
 
-/* ─── Flip card ─────────────────────────────────────────────────── */
-.flip-card-wrapper {
-  perspective: 1200px;
-  height: 300px;
+/* ─── Content card (Accenture-style: scales on hover, body slides in from left) ── */
+.content-card {
+  display: flex;
+  flex-direction: column;
+  background: #000;
+  cursor: pointer;
+  outline: none;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.32s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.flip-card-wrapper:focus-visible {
+.content-card--expanded {
+  transform: scale(1.04);
+  z-index: 2;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.45), 0 4px 16px rgba(0,0,0,0.3);
+}
+
+.content-card:focus-visible {
   outline: 2px solid var(--purple);
   outline-offset: 2px;
 }
 
-.flip-card-inner {
-  position: relative;
+/* ── Text panel — always visible at top ── */
+.content-card-panel {
+  flex-shrink: 0;
+  padding: 28px 28px 24px;
+  background: #000;
+}
+
+.content-card-number {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--purple);
+  margin-bottom: 12px;
+}
+
+.content-card-title {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(17px, 1.4vw, 20px);
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.3;
+  margin: 0;
+}
+
+/* Body reveal container — height opens via max-height inline style */
+.content-card-body-reveal {
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Body text slides in from the left on reveal */
+.content-card-body {
+  font-size: 14px;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.7);
+  margin: 0;
+  padding-top: 16px;
+  opacity: 0;
+  transform: translateX(-18px);
+  transition: opacity 0.3s cubic-bezier(0.22, 1, 0.36, 1) 0.06s,
+              transform 0.38s cubic-bezier(0.22, 1, 0.36, 1) 0.06s;
+}
+
+.content-card--expanded .content-card-body {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ── Image placeholder — fills remaining height, compresses as body reveals ── */
+.content-card-image {
+  flex: 1;
+  overflow: hidden;
+  min-height: 80px;
+}
+
+.content-card-image-inner {
   width: 100%;
   height: 100%;
-  transform-style: preserve-3d;
-  transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+  background: #1a1a1a;
+  transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.flip-card-inner.flipped {
-  transform: rotateY(180deg);
-}
-
-.flip-card-face {
-  position: absolute;
-  inset: 0;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.flip-card-back {
-  transform: rotateY(180deg);
+.content-card--expanded .content-card-image-inner {
+  transform: scale(1.04);
 }
 
 /* ─── Scroll reveal ──────────────────────────────────────────────── */
@@ -296,11 +354,28 @@ body {
 .flip-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 2px;
+  grid-auto-rows: 400px;
+  gap: 24px;
   margin-top: 56px;
+  overflow: visible; /* let hovered card scale past grid boundary */
 }
-@media (max-width: 900px) { .flip-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 560px) { .flip-grid { grid-template-columns: 1fr; } }
+/* ScrollReveal wrapper stretches to fill the fixed grid cell */
+.flip-grid > .reveal {
+  display: flex;
+  flex-direction: column;
+}
+@media (max-width: 900px) {
+  .flip-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 380px;
+  }
+}
+@media (max-width: 560px) {
+  .flip-grid {
+    grid-template-columns: 1fr;
+    grid-auto-rows: 360px;
+  }
+}
 
 /* ─── Methodology step grid ───────────────────────────────────────── */
 .step-grid {
@@ -546,8 +621,14 @@ body {
     transform: none;
     filter: none;
   }
-  .flip-card-inner {
+  .content-card,
+  .content-card-image-inner,
+  .content-card-body-reveal,
+  .content-card-body {
     transition: none;
+  }
+  .content-card--expanded {
+    transform: none;
   }
   .hero-gradient { animation: none; }
   .jumplink { animation: none; }
