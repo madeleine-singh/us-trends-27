@@ -1,13 +1,20 @@
 import type { Metadata } from "next";
-import { DM_Sans } from "next/font/google";
+import { Alex_Brush, DM_Sans } from "next/font/google";
 import "./globals.css";
-import Nav from "@/components/Nav";
-import Footer from "@/components/Footer";
+import SiteShell from "@/components/SiteShell";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
+  display: "swap",
+});
+
+// Script face for the Trend 1 scrollytelling hero and watermark only.
+const alexBrush = Alex_Brush({
+  variable: "--font-script",
+  subsets: ["latin"],
+  weight: "400",
   display: "swap",
 });
 
@@ -23,7 +30,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${dmSans.variable}`}
+      className={`${dmSans.variable} ${alexBrush.variable}`}
     >
       <body>
         {/* Skip to main content — first focusable element */}
@@ -34,11 +41,7 @@ export default function RootLayout({
         >
           Skip to main content
         </a>
-        <Nav />
-        <main id="main-content" tabIndex={-1} style={{ paddingTop: "var(--nav-h)" }}>
-          {children}
-        </main>
-        <Footer />
+        <SiteShell>{children}</SiteShell>
       </body>
     </html>
   );
