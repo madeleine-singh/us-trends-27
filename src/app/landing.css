@@ -1,0 +1,581 @@
+/* ──────────────────────────────────────────────────────────────
+   Landing page — Figma "Home" (file oBrURc2SnDQiGHc2OPMhGp, node 114:9).
+
+   Scoped under .lp so nothing here leaks into the other pages.
+   Tokens come from globals.css / design/design.md.
+
+   Deviations from design.md, all specified by the Figma redesign and
+   logged in context/DECISIONS.md:
+     - display type is sans (Graphik -> DM Sans), not the serif
+     - headshots carry a 20px radius, overriding the global no-radius rule
+     - "About us" is set in purple at display size
+   ────────────────────────────────────────────────────────────── */
+
+.lp {
+  --lp-ink: #202020;
+  --lp-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Scroll distance a background change is spread over. */
+  --lp-blend-h: 40vh;
+  --lp-blend-h-short: 20vh;
+}
+
+/* ── Section shell ───────────────────────────────────────────── */
+/* <main> already offsets the fixed nav with padding-top: var(--nav-h), so a
+   section must fill the REMAINING viewport, not a full 100vh, or its bottom
+   content falls below the fold. svh also protects against mobile chrome. */
+.lp-section {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  min-height: calc(100vh - var(--nav-h));
+  min-height: calc(100svh - var(--nav-h));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(56px, 7vw, 100px) 0;
+  /* An in-page anchor otherwise parks the section top at y=0, i.e. underneath
+     the fixed nav, pushing the last nav-h of the section past the fold. Offset
+     the landing point by the nav so a section fills exactly the visible area. */
+  scroll-margin-top: var(--nav-h);
+}
+
+.lp-section__inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+
+/* ── Type ramp ───────────────────────────────────────────────── */
+/* Figma sizes are measured on a 1449px frame; the vw terms reproduce them at
+   that width and scale down from there. */
+.lp-display {
+  font-size: clamp(40px, 8.2vw, 120px);
+  font-weight: 600;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+
+.lp-h2 {
+  font-size: clamp(34px, 6.6vw, 96px);
+  font-weight: 600;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+
+.lp-trend-label {
+  font-size: clamp(20px, 3.3vw, 48px);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+
+.lp-body-xl {
+  font-size: clamp(18px, 2.2vw, 32px);
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.lp-body-lg {
+  font-size: clamp(17px, 1.9vw, 28px);
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+/* ── CTA — the Figma Button, size LG / Primary Brand ─────────── */
+/* Extends the existing .btn-primary rather than redefining it. */
+.lp-cta {
+  padding: 15px 30px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-transform: none;
+}
+
+/* The hero CTA sits on the gradient's light zone, where purple-on-violet has
+   no edge contrast. A hairline gives the control a 3:1 boundary (WCAG 1.4.11)
+   without changing the fill. */
+.lp-cta--on-glow {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.85);
+}
+
+/* ── Section blend bands ────────────────────────────────────── */
+/* Backgrounds change through a full-width band rather than cutting, the same
+   device the /trend-1-scroll page uses. Extra stops hold the start and end
+   colours longer and move fastest through the middle, so the change reads as a
+   slow dissolve instead of a visible ramp.
+
+   Bands sit between sections, so they add scroll distance. The "Scroll" CTA
+   anchors on #executive-summary itself, which skips the first band. */
+.lp-blend {
+  width: 100%;
+  height: var(--lp-blend-h);
+  flex-shrink: 0;
+  background: linear-gradient(
+    180deg,
+    var(--from) 0%,
+    color-mix(in srgb, var(--from) 95%, var(--to)) 14%,
+    color-mix(in srgb, var(--from) 82%, var(--to)) 30%,
+    color-mix(in srgb, var(--from) 55%, var(--to)) 50%,
+    color-mix(in srgb, var(--from) 26%, var(--to)) 70%,
+    color-mix(in srgb, var(--from) 7%, var(--to)) 86%,
+    var(--to) 100%
+  );
+}
+
+/* Trend 1 into Trend 2 is near enough the same ink that it needs less runway;
+   what dissolves there is the wordmark going out and the photograph coming in. */
+.lp-blend--short { height: var(--lp-blend-h-short); }
+
+/* The hero's bottom-centre glow lives in the section background, not the
+   backdrop, so it is not faded by the edge mask. This continues it into the
+   band and lets it die out there, instead of stopping dead at the seam. */
+.lp-blend--glow {
+  background:
+    radial-gradient(120% 128% at 50% -20%, rgba(109, 71, 207, 0.82) 0%, rgba(109, 71, 207, 0) 60%),
+    linear-gradient(
+      180deg,
+      var(--from) 0%,
+      color-mix(in srgb, var(--from) 95%, var(--to)) 14%,
+      color-mix(in srgb, var(--from) 82%, var(--to)) 30%,
+      color-mix(in srgb, var(--from) 55%, var(--to)) 50%,
+      color-mix(in srgb, var(--from) 26%, var(--to)) 70%,
+      color-mix(in srgb, var(--from) 7%, var(--to)) 86%,
+      var(--to) 100%
+    );
+}
+
+/* ── Animated backdrops ─────────────────────────────────────── */
+.lp-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: clip;
+  pointer-events: none;
+
+  /* Everything decorative — orbs, wordmark, photograph, washes — fades out at
+     the section edges. That leaves each edge as the section's own flat base
+     colour, so a band only has to blend two solid colours and no seam shows.
+     The ramp only has to reach zero AT the edge, so it can stay short and
+     leave the backdrops intact through the body of the section. */
+  --fade-top: 12%;
+  --fade-bottom: 12%;
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    transparent 0%,
+    #000 var(--fade-top),
+    #000 calc(100% - var(--fade-bottom)),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    180deg,
+    transparent 0%,
+    #000 var(--fade-top),
+    #000 calc(100% - var(--fade-bottom)),
+    transparent 100%
+  );
+}
+
+/* Soft radial fills rather than blurred shapes — no filter, so the drift stays
+   on the compositor. */
+.lp-orb {
+  position: absolute;
+  display: block;
+  will-change: transform;
+}
+
+@keyframes lp-drift-a { to { transform: translate3d(7vw, 5vw, 0) scale(1.16); } }
+@keyframes lp-drift-b { to { transform: translate3d(-8vw, -6vw, 0) scale(1.22); } }
+@keyframes lp-drift-c { to { transform: translate3d(-5vw, 7vw, 0) scale(0.86); } }
+@keyframes lp-drift-d { to { transform: translate3d(6vw, -5vw, 0) scale(1.1); } }
+
+/* ── 1. Hero — node 114:10 ──────────────────────────────────── */
+/* The base gradient is held close to vertical so the section's bottom edge is
+   effectively one flat colour for the band below to pick up. */
+.lp-hero {
+  color: #fff;
+  background:
+    radial-gradient(115% 78% at 50% 116%, #6d47cf 0%, rgba(109, 71, 207, 0) 64%),
+    linear-gradient(172deg, #0a0514 0%, #1d0b4a 34%, #35169a 72%, #4a23a8 100%);
+}
+
+/* Nothing sits above the hero but the nav, so there is no top seam to resolve. */
+.lp-hero .lp-backdrop { --fade-top: 0%; --fade-bottom: 14%; }
+
+.lp-hero__eyebrow {
+  font-size: clamp(20px, 3.3vw, 48px);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0 0 clamp(16px, 2.2vw, 32px);
+}
+
+.lp-hero__orb--a {
+  top: -24vw; left: -16vw; width: 72vw; height: 72vw;
+  background: radial-gradient(circle at center, rgba(161, 0, 255, 0.34), rgba(161, 0, 255, 0) 68%);
+  animation: lp-drift-a 36s ease-in-out infinite alternate;
+}
+.lp-hero__orb--b {
+  bottom: -30vw; right: -20vw; width: 78vw; height: 78vw;
+  background: radial-gradient(circle at center, rgba(117, 0, 192, 0.4), rgba(117, 0, 192, 0) 66%);
+  animation: lp-drift-b 44s ease-in-out infinite alternate;
+}
+.lp-hero__orb--c {
+  top: 26vw; left: 34vw; width: 46vw; height: 46vw;
+  background: radial-gradient(circle at center, rgba(229, 180, 255, 0.18), rgba(229, 180, 255, 0) 66%);
+  animation: lp-drift-c 30s ease-in-out infinite alternate;
+}
+
+.lp-hero__scroll {
+  display: flex;
+  justify-content: center;
+  margin-top: clamp(48px, 7vw, 96px);
+}
+
+/* ── 2. Executive summary — node 114:13 ─────────────────────── */
+.lp-exec {
+  color: #fff;
+  background: linear-gradient(176deg, #241a4a 0%, #2f2260 52%, #201a44 100%);
+}
+
+.lp-exec .lp-backdrop { --fade-top: 14%; --fade-bottom: 14%; }
+
+/* The 30% black veil from the Figma frame, over the mesh but under the copy. */
+.lp-exec__veil {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.lp-exec__orb--a {
+  top: -30vw; left: -12vw; width: 80vw; height: 80vw;
+  background: radial-gradient(circle at center, rgba(124, 92, 255, 0.5), rgba(124, 92, 255, 0) 66%);
+  animation: lp-drift-a 40s ease-in-out infinite alternate;
+}
+.lp-exec__orb--b {
+  bottom: -34vw; right: -18vw; width: 86vw; height: 86vw;
+  background: radial-gradient(circle at center, rgba(79, 70, 229, 0.5), rgba(79, 70, 229, 0) 68%);
+  animation: lp-drift-b 52s ease-in-out infinite alternate;
+}
+.lp-exec__orb--c {
+  top: 12vw; left: 42vw; width: 52vw; height: 52vw;
+  background: radial-gradient(circle at center, rgba(179, 157, 219, 0.3), rgba(179, 157, 219, 0) 66%);
+  animation: lp-drift-c 34s ease-in-out infinite alternate;
+}
+.lp-exec__orb--d {
+  bottom: 6vw; left: -14vw; width: 44vw; height: 44vw;
+  background: radial-gradient(circle at center, rgba(161, 0, 255, 0.32), rgba(161, 0, 255, 0) 68%);
+  animation: lp-drift-d 46s ease-in-out infinite alternate;
+}
+
+/* Headline left, summary right — collapses to a stack. */
+.lp-exec__split {
+  display: grid;
+  grid-template-columns: minmax(0, 504fr) minmax(0, 540fr);
+  gap: clamp(32px, 5vw, 96px);
+  align-items: center;
+}
+@media (max-width: 900px) {
+  .lp-exec__split { grid-template-columns: 1fr; gap: 28px; }
+}
+
+/* ── 3. Trend 1 — node 284:671 ──────────────────────────────── */
+/* Same moving backdrop as the Core Thought section on /trend-1-scroll: the
+   script-face wordmark drifting behind the copy. Figma places it as two rows,
+   near the top and the bottom of the frame. */
+.lp-t1 {
+  color: #fff;
+  background: var(--lp-ink);
+}
+
+/* Kept short so the wordmark rows survive: the ramp only has to reach zero at
+   the very edge, not dim the whole backdrop. */
+.lp-t1 .lp-backdrop { --fade-top: 8%; --fade-bottom: 8%; }
+
+.lp-t1__orb--a {
+  top: 14%; left: 62%; width: 50vw; height: 50vw;
+  background: radial-gradient(circle at center, rgba(126, 126, 138, 0.3), rgba(126, 126, 138, 0) 70%);
+  animation: lp-drift-c 38s ease-in-out infinite alternate;
+}
+.lp-t1__orb--b {
+  top: -32%; left: 46%; width: 80vw; height: 80vw;
+  background: radial-gradient(circle at center, rgba(110, 110, 122, 0.26), rgba(110, 110, 122, 0) 68%);
+  animation: lp-drift-b 50s ease-in-out infinite alternate;
+}
+.lp-t1__orb--c {
+  top: 18%; left: -16%; width: 80vw; height: 80vw;
+  background: radial-gradient(circle at center, rgba(96, 96, 108, 0.28), rgba(96, 96, 108, 0) 68%);
+  animation: lp-drift-a 44s ease-in-out infinite alternate;
+}
+
+.lp-mark {
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: flex;
+  overflow: clip;
+  font-family: var(--font-script), "Segoe Script", cursive;
+  font-size: clamp(90px, 19vw, 300px);
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.06);
+}
+.lp-mark--top { top: 2%; }
+.lp-mark--bottom { bottom: 0; }
+
+/* Two identical copies with the gap carried as padding, so translating the
+   track by exactly -50% loops seamlessly. */
+.lp-mark__track {
+  display: flex;
+  width: max-content;
+  white-space: nowrap;
+  will-change: transform;
+  animation: lp-marquee 58s linear infinite;
+}
+.lp-mark--bottom .lp-mark__track {
+  animation-duration: 74s;
+  animation-direction: reverse;
+}
+.lp-mark__track > span { padding-right: 4vw; }
+
+@keyframes lp-marquee { to { transform: translate3d(-50%, 0, 0); } }
+
+/* ── 4. Trend 2 — node 284:692 ──────────────────────────────── */
+.lp-t2 {
+  color: #fff;
+  background: #171717;
+}
+
+/* Photograph and wash fade together at the same rate, so the composite resolves
+   toward #171717 without the photo ever brightening as the wash lifts. */
+.lp-t2 .lp-backdrop { --fade-top: 10%; --fade-bottom: 12%; }
+
+/* Inset past the edges so the slow pan never exposes a gap. */
+.lp-photo {
+  position: absolute;
+  inset: -7%;
+  background-image: url("/home/trend-2-receipts.jpg");
+  background-size: cover;
+  background-position: center;
+  will-change: transform;
+  animation: lp-kenburns 48s ease-in-out infinite alternate;
+}
+@keyframes lp-kenburns {
+  to { transform: translate3d(2.5%, -2%, 0) scale(1.12); }
+}
+
+/* Figma specifies a flat 50% black wash, which leaves white body copy at about
+   2.9:1 over the pale receipts. Graded and deepened on the text side instead:
+   the copy clears 9:1 and the photograph still reads on the right. */
+.lp-t2__wash {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    rgba(0, 0, 0, 0.86) 0%,
+    rgba(0, 0, 0, 0.78) 52%,
+    rgba(0, 0, 0, 0.44) 100%
+  );
+}
+
+.lp-t2__orb {
+  bottom: -28%; left: -8%; width: 124%; height: 92%;
+  background: radial-gradient(ellipse at center, rgba(20, 20, 26, 0.55), rgba(20, 20, 26, 0) 66%);
+  animation: lp-drift-d 56s ease-in-out infinite alternate;
+}
+
+/* ── Shared trend-section block ─────────────────────────────── */
+.lp-trend__stack {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(20px, 3.4vw, 50px);
+  align-items: flex-start;
+}
+
+.lp-trend__body {
+  max-width: 30em;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* ── 5. About us — node 114:60 ──────────────────────────────── */
+.lp-about {
+  --lp-shot: 200px;
+  --lp-about-gap: clamp(48px, 6vw, 88px);
+
+  background: #fff;
+  color: #000;
+  justify-content: space-between;
+  gap: var(--lp-about-gap);
+}
+
+/* This section carries the most stacked content of the five — heading, lede,
+   two rows of profiles and the thanks line. On a landscape viewport its
+   internals are sized against viewport HEIGHT as well as width so the whole
+   thing sits inside one screen. Everything keeps a floor, so a genuinely short
+   window grows past the fold rather than shrinking to something illegible.
+
+   Below 760px the profiles stack one or two up and the section cannot fit in a
+   screen at any sane size, so nothing shrinks and the tiles stay full size. */
+/* The rules live at the end of this section, after every base declaration they
+   have to override — a media query adds no specificity, so source order is
+   what decides. */
+
+/* The footer follows, which is site chrome rather than a landing section, so
+   the bottom edge is left as it is on every other page. */
+.lp-about .lp-backdrop { --fade-top: 16%; --fade-bottom: 0%; }
+
+.lp-about__orb--a {
+  top: -34vw; left: -18vw; width: 74vw; height: 74vw;
+  background: radial-gradient(circle at center, rgba(161, 0, 255, 0.09), rgba(161, 0, 255, 0) 66%);
+  animation: lp-drift-a 48s ease-in-out infinite alternate;
+}
+.lp-about__orb--b {
+  bottom: -30vw; right: -16vw; width: 68vw; height: 68vw;
+  background: radial-gradient(circle at center, rgba(117, 0, 192, 0.08), rgba(117, 0, 192, 0) 66%);
+  animation: lp-drift-b 60s ease-in-out infinite alternate;
+}
+
+.lp-about__title {
+  color: var(--purple-dk);
+  text-align: center;
+}
+
+.lp-about__lede {
+  color: #202020;
+  text-align: center;
+  margin: clamp(12px, 1.6vw, 16px) auto 0;
+  max-width: 1249px;
+}
+
+/* Three-up rows, centred, matching Figma. Columns track the tile; captions are
+   held on one line and allowed to run into the gutter rather than wrap, so a
+   shrinking tile can never grow the row back by rewrapping its caption. */
+.lp-profiles {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, var(--lp-shot));
+  justify-content: center;
+  gap: clamp(36px, 4.5vw, 60px) clamp(40px, 5.5vw, 80px);
+}
+@media (max-width: 760px) {
+  .lp-profiles { grid-template-columns: repeat(2, minmax(0, 200px)); }
+}
+@media (max-width: 460px) {
+  .lp-profiles { grid-template-columns: minmax(0, 200px); }
+}
+
+.lp-profile {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+/* The one place the global no-radius rule is overridden, per the Figma spec. */
+.lp-shot {
+  width: var(--lp-shot, 200px);
+  height: var(--lp-shot, 200px);
+  object-fit: cover;
+  display: block;
+  background: #f1f1ef;
+  border: 1px solid #f1f1ef;
+  border-radius: 20px !important;
+  filter: grayscale(1);
+  transition: filter 0.4s var(--lp-ease), transform 0.4s var(--lp-ease);
+}
+/* Figma renders the headshots desaturated. Colour on hover is the reward. */
+@media (hover: hover) and (pointer: fine) {
+  .lp-profile:hover .lp-shot {
+    filter: grayscale(0);
+    transform: scale(1.03);
+  }
+}
+.lp-profile__name,
+.lp-profile__role {
+  font-size: 18px;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.lp-profile__name { font-weight: 500; color: #000; }
+.lp-profile__role { font-weight: 400; color: #202020; }
+
+.lp-thanks {
+  font-size: 18px;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  color: #555;
+  text-align: center;
+  max-width: 855px;
+  margin: 0 auto;
+}
+
+/* Fit the whole About section inside one screen.
+
+   It carries the most stacked content of the five — heading, lede, two rows of
+   profiles, thanks line — so on a landscape viewport its internals are sized
+   against viewport HEIGHT as well as width. Everything keeps a floor, so a
+   genuinely short window grows past the fold rather than shrinking to something
+   illegible.
+
+   Below 760px the profiles stack one or two up and the section cannot fit in a
+   screen at any sane size, so nothing shrinks and every Figma value stands. */
+@media (min-width: 761px) {
+  .lp-about {
+    --lp-shot: clamp(120px, 17svh, 200px);
+    --lp-about-gap: clamp(18px, 3svh, 88px);
+    padding-top: clamp(32px, 4.5svh, 100px);
+    padding-bottom: clamp(32px, 4.5svh, 100px);
+  }
+  .lp-about .lp-h2 { font-size: clamp(34px, min(6.6vw, 7svh), 96px); }
+  .lp-about .lp-body-lg { font-size: clamp(16px, min(1.9vw, 2.3svh), 28px); }
+  .lp-profiles { row-gap: clamp(20px, 3.2svh, 60px); }
+  .lp-profile { gap: clamp(8px, 1.3svh, 12px); }
+  .lp-profile__name,
+  .lp-profile__role { font-size: clamp(16px, 1.9svh, 18px); }
+  .lp-thanks { font-size: 16px; }
+}
+
+/* ── Narrow viewports ───────────────────────────────────────── */
+/* Shorter bands so the page does not become an endless scroll on a phone,
+   where each band costs a larger share of the total. */
+@media (max-width: 760px) {
+  .lp { --lp-blend-h: 26vh; --lp-blend-h-short: 14vh; }
+}
+
+/* ── Off-screen pause ───────────────────────────────────────── */
+/* Must sit after every rule above: each of those uses the `animation`
+   shorthand, which resets animation-play-state to running. The descendant
+   selector also outranks the single-class orb rules. */
+.lp-backdrop .lp-orb,
+.lp-backdrop .lp-mark__track,
+.lp-backdrop .lp-photo {
+  animation-play-state: paused;
+}
+.lp-backdrop[data-live] .lp-orb,
+.lp-backdrop[data-live] .lp-mark__track,
+.lp-backdrop[data-live] .lp-photo {
+  animation-play-state: running;
+}
+
+/* ── Reduced motion ─────────────────────────────────────────── */
+/* globals.css already collapses animation durations globally; these stop the
+   loops outright so nothing lands mid-transform. */
+@media (prefers-reduced-motion: reduce) {
+  .lp-orb,
+  .lp-mark__track,
+  .lp-photo {
+    animation: none !important;
+    transform: none !important;
+  }
+  .lp-shot { transition: none; }
+}
