@@ -1,9 +1,8 @@
 "use client";
 
 import { useMemo } from "react";
+import type { Stop } from "@/content/trends/types";
 import { useActiveSection, useLightZone } from "./motion";
-
-export type Stop = { id: string; label: string };
 
 /**
  * Persistent vertical section-progress rail ("sticky scroll" in the Figma).
@@ -27,25 +26,25 @@ export default function SectionProgressNav({
 
   return (
     <nav
-      className="t1s-rail"
+      className="trs-rail"
       data-theme={light ? "light" : undefined}
       aria-label="Section progress"
     >
-      <ol className="t1s-rail__list">
+      <ol className="trs-rail__list">
         {stops.map((stop, i) => {
           const isActive = stop.id === active;
           const isPast = i < activeIndex;
           return (
-            <li key={stop.id} className="t1s-rail__item">
+            <li key={stop.id} className="trs-rail__item">
               <a
                 href={`#${stop.id}`}
-                className="t1s-rail__link"
+                className="trs-rail__link"
                 data-active={isActive ? "" : undefined}
                 data-past={isPast ? "" : undefined}
                 aria-current={isActive ? "true" : undefined}
               >
-                <span className="t1s-rail__tick" aria-hidden="true" />
-                <span className="t1s-rail__label">{stop.label}</span>
+                <span className="trs-rail__tick" aria-hidden="true" />
+                <span className="trs-rail__label">{stop.label}</span>
               </a>
             </li>
           );

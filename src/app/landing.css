@@ -105,7 +105,7 @@
 
 /* ── Section blend bands ────────────────────────────────────── */
 /* Backgrounds change through a full-width band rather than cutting, the same
-   device the /trend-1-scroll page uses. Extra stops hold the start and end
+   device the /trend-1 page uses. Extra stops hold the start and end
    colours longer and move fastest through the middle, so the change reads as a
    slow dissolve instead of a visible ramp.
 
@@ -286,7 +286,7 @@
 }
 
 /* ── 3. Trend 1 — node 284:671 ──────────────────────────────── */
-/* Same moving backdrop as the Core Thought section on /trend-1-scroll: the
+/* Same moving backdrop as the Core Thought section on /trend-1: the
    script-face wordmark drifting behind the copy. Figma places it as two rows,
    near the top and the bottom of the frame. */
 .lp-t1 {

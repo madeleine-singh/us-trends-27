@@ -1,0 +1,912 @@
+/* ──────────────────────────────────────────────────────────────
+   Trend 1 — scrollytelling layout.
+   Scoped under .trs so nothing here leaks into the existing pages.
+   Tokens come from globals.css / design/design.md.
+
+   Section backgrounds are joined by full-width .trs-blend bands so
+   every colour change happens gradually as you scroll rather than
+   as a hard cut.
+   ────────────────────────────────────────────────────────────── */
+
+.trs {
+  --trs-bg: #202020;
+  --trs-hero-end: #241033;
+  --trs-light: #f1f1ef;
+  --trs-ease-enter: cubic-bezier(0.22, 1, 0.36, 1);
+  background: var(--trs-bg);
+}
+
+/* Eased rather than linear: extra stops hold the start and end colours
+   longer and move fastest through the middle, so the change reads as a
+   slow dissolve instead of a visible ramp. */
+.trs-blend {
+  width: 100%;
+  background: linear-gradient(
+    180deg,
+    var(--from) 0%,
+    color-mix(in srgb, var(--from) 95%, var(--to)) 14%,
+    color-mix(in srgb, var(--from) 82%, var(--to)) 30%,
+    color-mix(in srgb, var(--from) 55%, var(--to)) 50%,
+    color-mix(in srgb, var(--from) 26%, var(--to)) 70%,
+    color-mix(in srgb, var(--from) 7%, var(--to)) 86%,
+    var(--to) 100%
+  );
+}
+
+.trs-shell {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 var(--pad-x);
+}
+.trs-shell--narrow { max-width: 900px; }
+.trs-center { text-align: center; }
+
+.trs-h2 {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(30px, 4vw, 52px);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: #fff;
+  margin: 8px 0 0;
+}
+.trs-h2--display { font-size: clamp(34px, 5.4vw, 76px); }
+.trs-h2--dark { color: #000; }
+
+/* ── Section progress rail ───────────────────────────────────── */
+.trs-rail {
+  position: fixed;
+  left: clamp(14px, 2vw, 34px);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 800;
+}
+.trs-rail__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+.trs-rail__link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  padding: 2px 0;
+}
+.trs-rail__tick {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.3);
+  transition: width 0.4s var(--ease), background-color 0.5s var(--ease);
+}
+.trs-rail__label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity 0.28s var(--ease), transform 0.28s var(--ease), color 0.5s var(--ease);
+}
+.trs-rail__link[data-past] .trs-rail__tick { background: rgba(255, 255, 255, 0.55); }
+.trs-rail__link[data-active] .trs-rail__tick { width: 34px; background: var(--purple); }
+.trs-rail__link[data-active] .trs-rail__label,
+.trs-rail:hover .trs-rail__label,
+.trs-rail__link:focus-visible .trs-rail__label {
+  opacity: 1;
+  transform: translateX(0);
+}
+.trs-rail__link[data-active] .trs-rail__label { color: #fff; }
+.trs-rail__link:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
+
+/* Dark ink while the rail passes over the light timeline section. */
+.trs-rail[data-theme="light"] .trs-rail__tick { background: rgba(0, 0, 0, 0.3); }
+.trs-rail[data-theme="light"] .trs-rail__label { color: #555; }
+.trs-rail[data-theme="light"] .trs-rail__link[data-past] .trs-rail__tick { background: rgba(0, 0, 0, 0.55); }
+.trs-rail[data-theme="light"] .trs-rail__link[data-active] .trs-rail__tick { background: var(--purple); }
+.trs-rail[data-theme="light"] .trs-rail__link[data-active] .trs-rail__label { color: var(--purple-dk); }
+.trs-rail[data-theme="light"] .trs-rail__link:focus-visible { outline-color: #000; }
+
+/* ── Hero ────────────────────────────────────────────────────── */
+/* <main> already offsets the fixed nav with padding-top: var(--nav-h), so the
+   hero must fill the REMAINING viewport, not a full 100vh, or its bottom (and
+   the jumplink sitting there) falls below the fold. svh keeps mobile browser
+   chrome from eating it too. */
+.trs-hero {
+  position: relative;
+  min-height: calc(100vh - var(--nav-h));
+  min-height: calc(100svh - var(--nav-h));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: clamp(32px, 5vw, 56px) var(--pad-x) clamp(96px, 12vh, 132px);
+  background: linear-gradient(180deg, #1b0a2e 0%, #24123a 58%, var(--trs-hero-end) 100%);
+}
+.trs-hero__backdrop { position: absolute; inset: 0; pointer-events: none; }
+.trs-orb {
+  position: absolute;
+  display: block;
+  width: 70vw;
+  height: 70vw;
+  background: radial-gradient(circle at center, rgba(161, 0, 255, 0.4), rgba(161, 0, 255, 0) 68%);
+  will-change: transform;
+}
+.trs-orb--a { top: -18vw; left: -14vw; animation: trs-drift-a 34s ease-in-out infinite alternate; }
+.trs-orb--b {
+  bottom: -26vw;
+  right: -18vw;
+  background: radial-gradient(circle at center, rgba(117, 0, 192, 0.42), rgba(117, 0, 192, 0) 68%);
+  animation: trs-drift-b 42s ease-in-out infinite alternate;
+}
+.trs-orb--c {
+  top: 22vw;
+  left: 38vw;
+  width: 48vw;
+  height: 48vw;
+  background: radial-gradient(circle at center, rgba(229, 180, 255, 0.2), rgba(229, 180, 255, 0) 66%);
+  animation: trs-drift-c 28s ease-in-out infinite alternate;
+}
+@keyframes trs-drift-a { to { transform: translate3d(8vw, 6vw, 0) scale(1.15); } }
+@keyframes trs-drift-b { to { transform: translate3d(-9vw, -7vw, 0) scale(1.2); } }
+@keyframes trs-drift-c { to { transform: translate3d(-6vw, 8vw, 0) scale(0.88); } }
+
+.trs-hero__content { position: relative; text-align: center; }
+/* Two-line lockup per Figma node 343:705 — the practice name set solid and
+   uppercase, "presents" lighter underneath. */
+.trs-hero__presents {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(4px, 0.6vw, 10px);
+  font-size: clamp(15px, 1.5vw, 22px);
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0 0 clamp(12px, 2vw, 28px);
+}
+.trs-hero__kicker {
+  font-size: clamp(16px, 1.65vw, 24px);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.88);
+}
+.trs-hero__title {
+  font-family: var(--font-script), "Segoe Script", cursive;
+  font-weight: 400;
+  font-size: clamp(58px, 13vw, 190px);
+  line-height: 1.05;
+  color: #fff;
+  margin: 0;
+}
+
+.trs-jump {
+  position: absolute;
+  bottom: clamp(32px, 5vw, 64px);
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: border-color 0.28s var(--ease), color 0.28s var(--ease);
+  animation: trs-bounce 2.8s var(--trs-ease-enter) infinite;
+}
+.trs-jump svg { width: 18px; height: 18px; }
+.trs-jump:hover { color: #fff; border-color: #fff; }
+.trs-jump:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+@keyframes trs-bounce {
+  0%, 62%, 100% { transform: translate3d(0, 0, 0); }
+  76% { transform: translate3d(0, 8px, 0); }
+  88% { transform: translate3d(0, 3px, 0); }
+}
+
+/* ── Core thought ────────────────────────────────────────────── */
+.trs-core { background: var(--trs-bg); }
+.trs-core__runway { position: relative; height: 230vh; }
+.trs-core__pin {
+  position: sticky;
+  top: var(--nav-h);
+  min-height: calc(100vh - var(--nav-h));
+  min-height: calc(100svh - var(--nav-h));
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* Shared scroll-driven reveal for copy inside pinned scenes. */
+.trs-reveal {
+  opacity: 0;
+  transform: translate3d(0, 20px, 0);
+  transition:
+    opacity 0.7s var(--trs-ease-enter),
+    transform 0.8s var(--trs-ease-enter);
+}
+.trs-reveal[data-shown] { opacity: 1; transform: none; }
+
+/* 0 -> 1 only: a word is either absent or fully legible, never rendered at a
+   dimmed opacity that would fail contrast. */
+.trs-core__word {
+  display: inline-block;
+  opacity: 0;
+  transform: translate3d(0, 0.3em, 0);
+  transition:
+    opacity 0.5s var(--trs-ease-enter),
+    transform 0.6s var(--trs-ease-enter);
+}
+.trs-core__word[data-shown] { opacity: 1; transform: none; }
+.trs-core__mark {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  gap: 4vw;
+  white-space: nowrap;
+  font-family: var(--font-script), "Segoe Script", cursive;
+  font-size: clamp(90px, 19vw, 300px);
+  color: rgba(255, 255, 255, 0.06);
+  animation: trs-marquee 58s linear infinite;
+  will-change: transform;
+  pointer-events: none;
+}
+@keyframes trs-marquee { to { transform: translate3d(-50%, 0, 0); } }
+
+.trs-core__inner {
+  position: relative;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 var(--pad-x);
+  text-align: center;
+}
+.trs-core__text {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(26px, 3.6vw, 60px);
+  line-height: 1.22;
+  letter-spacing: -0.02em;
+  color: rgba(255, 255, 255, 0.94);
+  margin: 20px 0 0;
+}
+
+/* ── Timeline / chart ────────────────────────────────────────── */
+.trs-timeline { background: var(--trs-light); color: #000; }
+.trs-timeline__runway { position: relative; height: 340vh; }
+/* Sticks below the nav rather than under it, so the pinned height is the
+   actually-visible area. */
+.trs-timeline__pin {
+  position: sticky;
+  top: var(--nav-h);
+  min-height: calc(100vh - var(--nav-h));
+  min-height: calc(100svh - var(--nav-h));
+  display: flex;
+  align-items: center;
+  padding: 32px 0 40px;
+}
+
+.trs-chart { margin-top: clamp(24px, 3vw, 48px); }
+.trs-chart__legend { display: flex; flex-wrap: wrap; gap: 24px; margin-bottom: 20px; }
+.trs-chart__key {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--gray-600);
+}
+.trs-chart__key::before { content: ""; width: 22px; height: 3px; background: currentColor; }
+.trs-chart__key--authorship { color: var(--purple-dk); }
+
+.trs-chart__figure { margin: 0; }
+.trs-chart__stage { position: relative; }
+.trs-chart__plot { position: relative; width: 100%; aspect-ratio: 1060 / 410; }
+.trs-chart__tips { position: absolute; inset: 0; pointer-events: none; }
+.trs-chart__svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.trs-chart__grid { stroke: #dcdcd8; stroke-width: 1; }
+.trs-chart__line {
+  fill: none;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+}
+.trs-chart__line--velocity { stroke: #767676; }
+.trs-chart__line--authorship { stroke: var(--purple); stroke-width: 3.5; }
+.trs-chart__marker {
+  fill: var(--purple);
+  stroke: var(--trs-light);
+  stroke-width: 2;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+}
+.trs-chart__marker[data-shown] { opacity: 1; }
+.trs-chart__leader {
+  stroke: var(--purple);
+  stroke-width: 1;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+}
+.trs-chart__leader[data-shown] { opacity: 0.4; }
+
+/* Width is a share of the plot, not a pixel value, so separation is fixed in
+   chart space and cannot collapse at any viewport size. Markers sit 220 and
+   201 units apart in a 1060-unit viewBox, so anything under 19% is safe;
+   17% leaves 40 and 21 units of clearance. */
+.trs-chart__tip {
+  position: absolute;
+  width: 17%;
+  background: #fff;
+  border: 1px solid var(--gray-100);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  opacity: 0;
+  /* Boxes are placed at explicit chart coordinates in clear space, anchored on
+     the edge nearest a curve so they grow away from it if the text rewraps. */
+  transform: translate(-50%, 6px);
+  transition: opacity 0.5s var(--trs-ease-enter), transform 0.5s var(--trs-ease-enter);
+  pointer-events: none;
+}
+.trs-chart__tip[data-shown] { opacity: 1; transform: translate(-50%, 0); }
+.trs-chart__tip-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--purple-dk);
+}
+.trs-chart__tip-body { font-size: 13px; line-height: 1.42; color: #555; }
+
+.trs-chart__axis { position: relative; height: 30px; margin-top: 10px; }
+.trs-chart__axis span {
+  position: absolute;
+  transform: translateX(-50%);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gray-600);
+}
+.trs-chart__caption { margin: clamp(20px, 2.5vw, 32px) 0 0; max-width: 720px; }
+.trs-chart__caption p { font-size: 15px; line-height: 1.7; color: var(--gray-600); margin: 0; }
+.trs-chart__disclaimer {
+  margin-top: 12px !important;
+  font-size: 12px !important;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gray-400) !important;
+}
+
+/* ── Intro ───────────────────────────────────────────────────── */
+.trs-intro {
+  position: relative;
+  background: var(--trs-bg);
+  padding: clamp(120px, 18vw, 260px) 0;
+  text-align: center;
+  overflow: hidden;
+}
+/* Figma node 110:3034 lays a photograph over the ink at 15%. Edge-masked so
+   the section still meets its blend bands as a flat colour, and slowly panned
+   so the backdrop reads as alive rather than a flat texture. */
+.trs-intro__bg {
+  position: absolute;
+  inset: -6% -4%;
+  background-position: center;
+  background-size: cover;
+  opacity: 0.15;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 14%, #000 86%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 14%, #000 86%, transparent 100%);
+  animation: trs-intro-pan 56s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes trs-intro-pan {
+  to { transform: translate3d(2.5%, -2%, 0) scale(1.08); }
+}
+.trs-intro .trs-shell { position: relative; }
+.trs-intro__lede {
+  font-size: clamp(17px, 1.7vw, 26px);
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.72);
+  margin: clamp(20px, 3vw, 36px) auto 0;
+  max-width: 40ch;
+}
+
+/* ── Signals ─────────────────────────────────────────────────── */
+/* Figma nodes 110:3040 / 144:8585 (and the Sig2 / Sig3 equivalents) put the
+   heading top-left with the image collage falling beneath it, and the prose in
+   a right-hand rail. Each signal spans roughly two screenfuls, so the prose is
+   authored as blocks and spread down the rail — one block per screenful —
+   rather than being pinned. Nothing sticks: the heading scrolls with its copy. */
+.trs-signal { background: var(--trs-bg); padding: clamp(64px, 10vw, 168px) 0; }
+.trs-signal__grid {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 var(--pad-x);
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "head text"
+    "media text";
+  column-gap: clamp(32px, 5vw, 88px);
+}
+.trs-signal__head {
+  grid-area: head;
+  margin-bottom: clamp(28px, 4vw, 64px);
+}
+/* Signal photos drop in from above the fold rather than nudging up a little.
+   Scoped here so other reveals keep their shorter entrance. */
+.trs-signal__media {
+  grid-area: media;
+  position: relative;
+  --trs-fall: 52vh;
+  --trs-fall-dur: 1.9s;
+  --trs-fade-dur: 0.9s;
+}
+.trs-signal__text {
+  grid-area: text;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  gap: clamp(40px, 7vw, 120px);
+}
+.trs-signal__block p {
+  font-size: clamp(16px, 1.35vw, 19px);
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.72);
+  max-width: 62ch;
+  margin: 0 0 clamp(20px, 2vw, 28px);
+}
+.trs-signal__block p:last-child { margin-bottom: 0; }
+
+/* Inline source citation inside signal prose (Figma uses #c2a3ff underlined).
+   7.4:1 on #202020, so it carries as body-grade contrast on its own and the
+   underline means colour is never the only signal. */
+.trs-link {
+  color: var(--purple-screen);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: color var(--ease) 0.28s;
+}
+.trs-link:hover { color: #fff; }
+.trs-link:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
+/* ── Falling image drops ─────────────────────────────────────── */
+/* Clipped horizontally only, matching the overflow-clip on the Figma drop
+   groups: a few images are authored to bleed past the edge. The vertical axis
+   stays open so drops are visible while they fall in from above. */
+.trs-stage { position: relative; width: 100%; clip-path: inset(-200% 0); }
+.trs-drop { position: absolute; will-change: transform; }
+.trs-drop__inner {
+  display: block;
+  width: 100%;
+  height: 100%;
+  perspective: 1000px;
+  opacity: 0;
+  transform: translate3d(0, calc(-1 * var(--trs-fall, 120px)), 0)
+    rotate(calc(var(--trs-rot, 0deg) - 8deg)) scale(0.92);
+  transition:
+    opacity var(--trs-fade-dur, 1.1s) var(--trs-ease-enter),
+    transform var(--trs-fall-dur, 1.6s) var(--trs-ease-enter);
+  transition-delay: var(--trs-delay, 0ms);
+}
+.trs-drop[data-in] .trs-drop__inner {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) rotate(var(--trs-rot, 0deg)) scale(1);
+}
+.trs-drop__inner:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
+.trs-drop__flip {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.trs-drop__face { position: absolute; inset: 0; backface-visibility: hidden; }
+.trs-drop__face--front img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.trs-drop__face--back {
+  transform: rotateY(180deg);
+  background: #fff;
+  color: #202020;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 6px;
+  padding: 14px 16px;
+  overflow: hidden;
+}
+.trs-drop__caption { font-size: 14px; line-height: 1.45; }
+.trs-drop__source {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--purple-dk);
+}
+@media (hover: hover) and (pointer: fine) {
+  .trs-drop__inner:hover .trs-drop__flip { transform: rotateY(180deg); }
+}
+.trs-drop__inner:focus-visible .trs-drop__flip { transform: rotateY(180deg); }
+
+/* ── Word drops ──────────────────────────────────────────────── */
+/* Single line by default, as in the Figma composition — positions are authored
+   to clear each other on one line. `translate` (not `transform`) carries the
+   centre offset, so the shared parallax loop keeps sole ownership of transform. */
+.trs-word { position: absolute; will-change: transform; white-space: nowrap; }
+.trs-word[data-anchor="center"] { translate: -50% 0; }
+.trs-word[data-wrap] { white-space: normal; }
+.trs-word__inner {
+  display: inline-block;
+  font-weight: 600;
+  line-height: 1.06;
+  letter-spacing: -0.02em;
+  opacity: 0;
+  transform: translate3d(0, -84px, 0) rotate(calc(var(--trs-rot, 0deg) - 7deg));
+  transition:
+    opacity 1s var(--trs-ease-enter),
+    transform 1.4s var(--trs-ease-enter);
+  transition-delay: var(--trs-delay, 0ms);
+}
+.trs-word[data-in] .trs-word__inner {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) rotate(var(--trs-rot, 0deg));
+}
+
+/* One display face per word, from the Figma composition. Each face resets the
+   inherited weight and tracking, since these are single-weight loads and the
+   -0.02em tracking that suits DM Sans collapses the mono and pixel faces. */
+.trs-word__inner[data-font] { letter-spacing: normal; }
+.trs-word__inner[data-font="sans"] { letter-spacing: -0.02em; }
+.trs-word__inner[data-font="kokoro"] { font-family: var(--font-w-kokoro), Georgia, serif; font-weight: 400; }
+.trs-word__inner[data-font="comic"] { font-family: var(--font-w-comic), "Comic Sans MS", cursive; font-weight: 700; }
+.trs-word__inner[data-font="silkscreen"] { font-family: var(--font-w-silkscreen), monospace; font-weight: 700; text-transform: uppercase; }
+.trs-word__inner[data-font="sixtyfour"] { font-family: var(--font-w-sixtyfour), monospace; font-weight: 400; }
+.trs-word__inner[data-font="martian"] { font-family: var(--font-w-martian), monospace; font-weight: 600; }
+.trs-word__inner[data-font="diphylleia"] { font-family: var(--font-w-diphylleia), Georgia, serif; font-weight: 400; }
+.trs-word__inner[data-font="baloo"] { font-family: var(--font-w-baloo), system-ui, sans-serif; font-weight: 400; }
+.trs-word__inner[data-font="azeret"] { font-family: var(--font-w-azeret), monospace; font-weight: 600; }
+.trs-word__inner[data-font="geom"] { font-family: var(--font-w-geom), system-ui, sans-serif; font-weight: 600; }
+
+/* ── What to expect — parallax release ───────────────────────── */
+.trs-expect {
+  background: linear-gradient(180deg, #000000 0%, rgba(106, 1, 172, 0.92) 100%);
+  text-align: center;
+}
+.trs-expect__runway { position: relative; height: 280vh; }
+.trs-expect__pin {
+  position: sticky;
+  top: var(--nav-h);
+  min-height: calc(100vh - var(--nav-h));
+  min-height: calc(100svh - var(--nav-h));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(20px, 4vh, 56px);
+  padding: clamp(24px, 4vh, 48px) 0;
+  overflow: hidden;
+}
+.trs-expect__lede {
+  font-size: clamp(16px, 1.4vw, 20px);
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.82);
+  margin: clamp(20px, 3vw, 34px) auto 0;
+  max-width: 70ch;
+}
+/* ── Implications ────────────────────────────────────────────── */
+/* Figma node 446:793: a short purple crown at the very top of the section,
+   dropping to ink almost immediately, then the cards. */
+.trs-means {
+  background: linear-gradient(180deg, #6a01ac 0%, var(--trs-bg) 13%);
+  padding: clamp(72px, 9vw, 130px) 0 clamp(64px, 8vw, 110px);
+}
+.trs-means__title { max-width: 925px; margin-inline: auto; }
+.trs-means__hint {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  text-align: center;
+  margin: clamp(18px, 2.5vw, 28px) 0 0;
+}
+
+/* ── Implication card carousel ───────────────────────────────── */
+.trs-carousel {
+  --trs-card-w: clamp(258px, 25.5vw, 370px);
+  --trs-card-h: clamp(420px, 38vw, 550px);
+  --trs-card-gap: clamp(16px, 2.2vw, 32px);
+  margin-top: clamp(32px, 4.5vw, 60px);
+}
+
+/* A real scroll container, so swipe, trackpad, scrollbar and Tab-to-card all
+   work natively. The inline padding matches the page gutter and the snap
+   padding keeps a card flush left after every step. */
+.trs-carousel__track {
+  list-style: none;
+  margin: 0;
+  padding: 0 var(--pad-x) 4px;
+  display: flex;
+  column-gap: var(--trs-card-gap);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-left: var(--pad-x);
+  scrollbar-width: none;
+}
+.trs-carousel__track::-webkit-scrollbar { display: none; }
+.trs-carousel__track:focus-visible { outline: 2px solid rgba(255, 255, 255, 0.7); outline-offset: 4px; }
+
+.trs-card {
+  flex: 0 0 var(--trs-card-w);
+  width: var(--trs-card-w);
+  height: var(--trs-card-h);
+  scroll-snap-align: start;
+  /* Cropped cards at the edge of the viewport sit back, per the Figma
+     annotation on node 446:800 ("50% opacity until in view"). */
+  opacity: 0.5;
+  transition: opacity 0.5s var(--trs-ease-enter);
+}
+.trs-card[data-inview] { opacity: 1; }
+
+.trs-card__inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  padding: clamp(20px, 2.2vw, 32px);
+  overflow: hidden;
+  cursor: pointer;
+  /* Figma nodes 446:797-801 specify a 12px radius on these cards, overriding
+     the global no-radius rule. Scoped to this element only. */
+  border-radius: 12px !important;
+}
+.trs-card__inner:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
+.trs-card__bg {
+  position: absolute;
+  inset: 0;
+  background-position: center;
+  background-size: cover;
+}
+/* Figma washes the photo with a flat rgba(0,0,0,0.4). White copy over the
+   brightest cards (open sky, dawn water) measures under 3:1 at that value, so
+   the wash is graded instead: deeper behind the heading, Figma's value below. */
+.trs-card__wash {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.72) 0%,
+    rgba(0, 0, 0, 0.46) 34%,
+    rgba(0, 0, 0, 0.4) 60%,
+    rgba(0, 0, 0, 0.52) 100%
+  );
+  transition: opacity 0.4s var(--ease);
+}
+/* The revealed state: a frosted panel over the photo so the body copy reads.
+   visibility flips with opacity so the browser can skip the blur entirely
+   while the card is closed — a standing backdrop-filter on five cards inside
+   a scroll container is a real compositing cost. */
+.trs-card__frost {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.2);
+  /* Unprefixed only. Writing -webkit-backdrop-filter alongside it makes
+     Lightning CSS collapse the pair down to the prefixed property alone, which
+     Chromium then ignores, so the panel loses its blur entirely. The build adds
+     whatever prefixes its targets need. */
+  backdrop-filter: blur(10px);
+  box-shadow: inset 0 0 0 100vmax rgba(0, 0, 0, 0.34);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.42s var(--ease), visibility 0s linear 0.42s;
+}
+
+.trs-card__head,
+.trs-card__body { position: relative; }
+.trs-card__num {
+  display: block;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: #fff;
+  margin-bottom: clamp(14px, 1.6vw, 24px);
+}
+.trs-card__title {
+  display: block;
+  font-size: clamp(19px, 1.7vw, 24px);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: #fff;
+  text-wrap: balance;
+}
+/* Present in the DOM at all times so assistive tech reads every card in full;
+   only the visual layer changes on reveal. No layout shift either — the flex
+   column is space-between in both states, so the heading never moves. */
+.trs-card__body {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #fff;
+  opacity: 0;
+  transform: translate3d(0, 10px, 0);
+  transition: opacity 0.42s var(--trs-ease-enter), transform 0.5s var(--trs-ease-enter);
+}
+
+.trs-card__inner:focus-visible .trs-card__frost,
+.trs-card[data-open] .trs-card__frost {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.42s var(--ease), visibility 0s linear 0s;
+}
+.trs-card__inner:focus-visible .trs-card__body,
+.trs-card[data-open] .trs-card__body { opacity: 1; transform: none; }
+.trs-card__inner:focus-visible .trs-card__wash,
+.trs-card[data-open] .trs-card__wash { opacity: 0.72; }
+
+@media (hover: hover) and (pointer: fine) {
+  .trs-card__inner:hover .trs-card__frost {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.42s var(--ease), visibility 0s linear 0s;
+  }
+  .trs-card__inner:hover .trs-card__body { opacity: 1; transform: none; }
+  .trs-card__inner:hover .trs-card__wash { opacity: 0.72; }
+}
+
+/* ── Carousel controls ───────────────────────────────────────── */
+.trs-carousel__controls {
+  position: relative;
+  max-width: var(--max-w);
+  margin: clamp(24px, 3vw, 40px) auto 0;
+  padding: 0 var(--pad-x);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+.trs-carousel__steps {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+}
+/* 8px visual dot inside a 44px target, so the stepper stays tappable without
+   turning into a row of buttons. */
+.trs-carousel__step {
+  appearance: none;
+  border: 0;
+  background: none;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.trs-carousel__step::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.4);
+  transition: width 0.32s var(--ease), background-color 0.32s var(--ease);
+}
+.trs-carousel__step[data-active]::before { width: 42px; background: #fff; }
+.trs-carousel__step:hover::before { background: rgba(255, 255, 255, 0.75); }
+.trs-carousel__step:focus-visible { outline: 2px solid #fff; outline-offset: -6px; }
+
+.trs-carousel__arrows { position: absolute; right: var(--pad-x); display: flex; gap: 4px; }
+.trs-carousel__arrow {
+  appearance: none;
+  border: 0;
+  background: none;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  transition: color 0.28s var(--ease), opacity 0.28s var(--ease);
+}
+.trs-carousel__arrow svg { width: 24px; height: 24px; }
+.trs-carousel__arrow:hover:not(:disabled) { color: #fff; }
+.trs-carousel__arrow:focus-visible { outline: 2px solid #fff; outline-offset: -4px; }
+.trs-carousel__arrow:disabled { opacity: 0.35; cursor: default; }
+
+/* ── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 1180px) {
+  .trs-rail { display: none; }
+}
+@media (max-width: 900px) {
+  .trs-signal__grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    grid-template-areas: "head" "text" "media";
+    row-gap: 32px;
+  }
+  .trs-signal__head { margin-bottom: 0; }
+  .trs-signal__text { justify-content: flex-start; gap: clamp(24px, 5vw, 40px); }
+  .trs-timeline__runway { height: 260vh; }
+  .trs-core__runway { height: 190vh; }
+  .trs-expect__runway { height: 220vh; }
+  .trs-chart__plot { aspect-ratio: 1060 / 560; }
+
+  /* Too narrow to float readable cards over the plot: stack them underneath
+     instead. Reveal order still follows the draw, via opacity alone. */
+  .trs-chart__tips {
+    position: static;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 18px;
+  }
+  .trs-chart__tip {
+    position: static;
+    width: auto;
+    transform: none !important;
+  }
+  .trs-chart__tip-body { font-size: 14px; }
+  /* Cards are stacked below the chart here, so leaders point nowhere. */
+  .trs-chart__leader { display: none; }
+
+  /* Two cards per screen rather than three at the desktop clamp's floor,
+     which left the body copy at roughly 28 characters a line. */
+  .trs-carousel { --trs-card-w: clamp(280px, 42vw, 370px); }
+}
+@media (max-width: 640px) {
+  .trs-word__inner { font-size: 0.72em; }
+  .trs-chart__tip-body { font-size: 13px; }
+
+  /* One card per screen, so the reveal has room for the full body copy. */
+  .trs-carousel { --trs-card-w: calc(100vw - (var(--pad-x) * 2)); --trs-card-h: 460px; }
+  .trs-carousel__controls { justify-content: flex-start; }
+  .trs-carousel__arrows { position: static; margin-left: auto; }
+}
+
+/* ── Reduced motion ──────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .trs-drop__inner,
+  .trs-word__inner {
+    opacity: 1 !important;
+    transform: rotate(var(--trs-rot, 0deg)) !important;
+    transition: none !important;
+  }
+  .trs-orb,
+  .trs-core__mark,
+  .trs-intro__bg,
+  .trs-jump { animation: none !important; }
+
+  /* Cards reveal instantly; the frosted panel still appears, it just does not
+     fade or slide. Carousel steps jump rather than smooth-scroll (handled in
+     ImplicationCarousel via scroll behavior: auto). */
+  .trs-card,
+  .trs-card__wash,
+  .trs-card__frost,
+  .trs-card__body,
+  .trs-carousel__step::before { transition: none !important; }
+  .trs-card__body { transform: none !important; }
+
+  /* Pinned scenes report progress = 1 under reduced motion, so everything is
+     already marked shown; just remove the transitions. */
+  .trs-reveal,
+  .trs-core__word { transition: none !important; }
+  /* No transform override here: killing the transition is enough, and an
+     !important translate would fight the static mobile layout below 900px. */
+  .trs-chart__tip,
+  .trs-chart__marker { transition: none !important; }
+
+  /* Flip becomes a crossfade rather than a rotation. */
+  .trs-drop__flip { transform: none !important; transition: none !important; }
+  .trs-drop__face { backface-visibility: visible; }
+  .trs-drop__face--back { transform: none; opacity: 0; transition: opacity 0.2s linear; }
+  .trs-drop__inner:hover .trs-drop__face--back,
+  .trs-drop__inner:focus-visible .trs-drop__face--back { opacity: 1; }
+}

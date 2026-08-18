@@ -74,7 +74,15 @@ function segment(p: number, from: number, to: number) {
   return Math.min(1, Math.max(0, (p - from) / (to - from)));
 }
 
-export default function SignatureChart({ progress }: { progress: number }) {
+export default function SignatureChart({
+  progress,
+  caption,
+  disclaimer,
+}: {
+  progress: number;
+  caption: string;
+  disclaimer: string;
+}) {
   const reduced = useReducedMotion();
 
   const p = reduced ? 1 : progress;
@@ -87,25 +95,25 @@ export default function SignatureChart({ progress }: { progress: number }) {
     (needs.authorship === undefined || authorshipDraw >= needs.authorship);
 
   return (
-    <div className="t1s-chart">
-      <div className="t1s-chart__legend">
-        <span className="t1s-chart__key t1s-chart__key--velocity">Microtrend velocity</span>
-        <span className="t1s-chart__key t1s-chart__key--authorship">Authorship signals</span>
+    <div className="trs-chart">
+      <div className="trs-chart__legend">
+        <span className="trs-chart__key trs-chart__key--velocity">Microtrend velocity</span>
+        <span className="trs-chart__key trs-chart__key--authorship">Authorship signals</span>
       </div>
 
-      <figure className="t1s-chart__figure">
-        <div className="t1s-chart__stage">
-        <div className="t1s-chart__plot">
+      <figure className="trs-chart__figure">
+        <div className="trs-chart__stage">
+        <div className="trs-chart__plot">
           <svg
             viewBox={`0 0 ${VB_W} ${VB_H}`}
-            className="t1s-chart__svg"
+            className="trs-chart__svg"
             role="img"
-            aria-labelledby="t1s-chart-title t1s-chart-desc"
+            aria-labelledby="trs-chart-title trs-chart-desc"
           >
-            <title id="t1s-chart-title">
+            <title id="trs-chart-title">
               Microtrend velocity and authorship signals, 2023 to 2027
             </title>
-            <desc id="t1s-chart-desc">
+            <desc id="trs-chart-desc">
               Microtrend velocity rises sharply to a peak in 2024, then declines through 2027.
               Authorship signals start flat, rise steadily from 2025, overtake microtrend velocity
               in 2026, and finish highest in 2027. Directional only; there is no measured index.
@@ -118,21 +126,21 @@ export default function SignatureChart({ progress }: { progress: number }) {
                 y1={0}
                 x2={y.x}
                 y2={400}
-                className="t1s-chart__grid"
+                className="trs-chart__grid"
                 vectorEffect="non-scaling-stroke"
               />
             ))}
 
             <path
               d={VELOCITY_PATH}
-              className="t1s-chart__line t1s-chart__line--velocity"
+              className="trs-chart__line trs-chart__line--velocity"
               pathLength={1}
               style={{ strokeDashoffset: 1 - velocityDraw }}
               vectorEffect="non-scaling-stroke"
             />
             <path
               d={AUTHORSHIP_PATH}
-              className="t1s-chart__line t1s-chart__line--authorship"
+              className="trs-chart__line trs-chart__line--authorship"
               pathLength={1}
               style={{ strokeDashoffset: 1 - authorshipDraw }}
               vectorEffect="non-scaling-stroke"
@@ -147,7 +155,7 @@ export default function SignatureChart({ progress }: { progress: number }) {
                 y1={m.box.y}
                 x2={m.cx}
                 y2={m.cy}
-                className="t1s-chart__leader"
+                className="trs-chart__leader"
                 data-shown={isShown(m.needs) ? "" : undefined}
                 vectorEffect="non-scaling-stroke"
               />
@@ -159,7 +167,7 @@ export default function SignatureChart({ progress }: { progress: number }) {
                 cx={m.cx}
                 cy={m.cy}
                 r={5}
-                className="t1s-chart__marker"
+                className="trs-chart__marker"
                 data-shown={isShown(m.needs) ? "" : undefined}
                 vectorEffect="non-scaling-stroke"
               />
@@ -169,11 +177,11 @@ export default function SignatureChart({ progress }: { progress: number }) {
 
         {/* Sibling of the plot rather than a child, so it can drop out of
             absolute positioning and stack below the chart on narrow screens. */}
-        <div className="t1s-chart__tips">
+        <div className="trs-chart__tips">
           {MARKERS.map((m) => (
             <div
               key={m.id}
-              className="t1s-chart__tip"
+              className="trs-chart__tip"
               data-shown={isShown(m.needs) ? "" : undefined}
               style={{
                 left: `${(m.box.x / VB_W) * 100}%`,
@@ -182,14 +190,14 @@ export default function SignatureChart({ progress }: { progress: number }) {
                   : { bottom: `${((VB_H - m.box.y) / VB_H) * 100}%` }),
               }}
             >
-              <span className="t1s-chart__tip-label">{m.label}</span>
-              <span className="t1s-chart__tip-body">{m.body}</span>
+              <span className="trs-chart__tip-label">{m.label}</span>
+              <span className="trs-chart__tip-body">{m.body}</span>
             </div>
           ))}
         </div>
         </div>
 
-        <div className="t1s-chart__axis" aria-hidden="true">
+        <div className="trs-chart__axis" aria-hidden="true">
           {YEARS.map((y) => (
             <span key={y.label} style={{ left: `${(y.x / VB_W) * 100}%` }}>
               {y.label}
@@ -197,13 +205,9 @@ export default function SignatureChart({ progress }: { progress: number }) {
           ))}
         </div>
 
-        <figcaption className="t1s-chart__caption">
-          <p>
-            The line is the signature. It starts flat while microtrends do the work, gains weight as
-            people begin choosing for themselves, and finishes with the flourish: a point of view
-            someone is willing to put their name on.
-          </p>
-          <p className="t1s-chart__disclaimer">Not a measured index</p>
+        <figcaption className="trs-chart__caption">
+          <p>{caption}</p>
+          <p className="trs-chart__disclaimer">{disclaimer}</p>
         </figcaption>
       </figure>
     </div>

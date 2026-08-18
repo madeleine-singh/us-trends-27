@@ -28,7 +28,7 @@ These trends were developed by Accenture Song's Design & Digital Products practi
 <!-- NOTE: this is a primary trend card — eyebrow "Trend 01", larger title, purple CTA -->
 ### Signed by Yours Truly
 
-When every niche can be instantly identified, copied, and monetized, access to culture is no longer scarce. A credible, self-authored point of view is.
+People are reassessing how they express individuality in a culture where every niche is instantly accessible. What stands out now is not access, but authorship.
 
 [Read trend →](#trend-1)
 

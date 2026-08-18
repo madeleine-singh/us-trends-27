@@ -138,9 +138,9 @@ export default function HomePage() {
               </ScrollReveal>
               <ScrollReveal delay={160}>
                 <p className="lp-body-xl lp-trend__body">
-                  When every niche can be instantly identified, copied, and monetized,
-                  access to culture is no longer scarce. A credible, self-authored point
-                  of view is.
+                  People are reassessing how they express individuality in a culture where
+                  every niche is instantly accessible. What stands out now is not access,
+                  but authorship.
                 </p>
               </ScrollReveal>
               <ScrollReveal delay={240}>

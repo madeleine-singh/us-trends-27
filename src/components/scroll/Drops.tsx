@@ -1,38 +1,12 @@
 "use client";
 
 import { useCallback } from "react";
+import type { DropSpec, WordSpec } from "@/content/trends/types";
 import { useInView, useParallax } from "./motion";
 
-/* Positions are percentages of the parent stage box, so the whole
-   composition scales with the viewport instead of pinning to Figma px. */
-export type DropSpec = {
-  id: string;
-  src: string;
-  alt: string;
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-  rate: number;
-  rotate?: number;
-  /** TODO: supplied from the image Excel. Enables the hover/focus flip. */
-  caption?: string;
-  /** TODO: supplied from the image Excel. Makes the drop a link to the source. */
-  source?: string;
-};
-
-export type WordSpec = {
-  id: string;
-  text: string;
-  x: number;
-  y: number;
-  color: string;
-  size: number;
-  rate: number;
-  rotate?: number;
-};
-
-/** Aspect-locked positioning context for a signal's image composition. */
+/** Aspect-locked positioning context for a signal's image composition.
+    Children are placed as percentages of this box, so the whole collage
+    scales with the viewport instead of pinning to the Figma artboard. */
 export function Stage({
   width,
   height,
@@ -46,7 +20,7 @@ export function Stage({
 }) {
   return (
     <div
-      className={`t1s-stage ${className}`}
+      className={`trs-stage ${className}`}
       style={{ aspectRatio: `${width} / ${height}` }}
     >
       {children}
@@ -81,15 +55,15 @@ export function DropImage({
   const flippable = Boolean(spec.caption);
 
   const faces = (
-    <span className="t1s-drop__flip">
-      <span className="t1s-drop__face t1s-drop__face--front">
+    <span className="trs-drop__flip">
+      <span className="trs-drop__face trs-drop__face--front">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={spec.src} alt={spec.alt} loading="lazy" decoding="async" />
       </span>
       {flippable && (
-        <span className="t1s-drop__face t1s-drop__face--back">
-          <span className="t1s-drop__caption">{spec.caption}</span>
-          {spec.source && <span className="t1s-drop__source">View source</span>}
+        <span className="trs-drop__face trs-drop__face--back">
+          <span className="trs-drop__caption">{spec.caption}</span>
+          {spec.source && <span className="trs-drop__source">View source</span>}
         </span>
       )}
     </span>
@@ -98,15 +72,15 @@ export function DropImage({
   return (
     <div
       ref={setRefs}
-      className="t1s-drop"
+      className="trs-drop"
       data-in={shown ? "" : undefined}
       style={{
         left: `${spec.x}%`,
         top: `${spec.y}%`,
         width: `${spec.w}%`,
         height: `${spec.h}%`,
-        ["--t1s-rot" as string]: `${spec.rotate ?? 0}deg`,
-        ["--t1s-delay" as string]: `${index * 90}ms`,
+        ["--trs-rot" as string]: `${spec.rotate ?? 0}deg`,
+        ["--trs-delay" as string]: `${index * 90}ms`,
         ...(controlled
           ? { transform: `translate3d(0, ${controlled.offsetY.toFixed(1)}px, 0)` }
           : null),
@@ -114,7 +88,7 @@ export function DropImage({
     >
       {spec.source ? (
         <a
-          className="t1s-drop__inner"
+          className="trs-drop__inner"
           href={spec.source}
           target="_blank"
           rel="noopener noreferrer"
@@ -122,7 +96,7 @@ export function DropImage({
           {faces}
         </a>
       ) : (
-        <span className="t1s-drop__inner" tabIndex={flippable ? 0 : undefined}>
+        <span className="trs-drop__inner" tabIndex={flippable ? 0 : undefined}>
           {faces}
         </span>
       )}
@@ -130,6 +104,13 @@ export function DropImage({
   );
 }
 
+/**
+ * A single piece of borrowed internet vocabulary dropping into the collage.
+ * `spec.font` selects one of the display faces loaded in the root layout —
+ * the deliberate typographic mismatch is the point of the treatment.
+ * Sizes are Figma px at the 1449px artboard, scaled fluidly by vw and
+ * floored at 20px so nothing lands under the readable minimum.
+ */
 export function WordDrop({ spec, index = 0 }: { spec: WordSpec; index?: number }) {
   const parallaxRef = useParallax<HTMLDivElement>(spec.rate);
   const { ref: inViewRef, inView } = useInView();
@@ -144,18 +125,25 @@ export function WordDrop({ spec, index = 0 }: { spec: WordSpec; index?: number }
   return (
     <div
       ref={setRefs}
-      className="t1s-word"
+      className="trs-word"
       data-in={inView ? "" : undefined}
+      data-anchor={spec.anchor ?? "left"}
+      data-wrap={spec.wrapAt ? "" : undefined}
       style={{
         left: `${spec.x}%`,
         top: `${spec.y}%`,
-        ["--t1s-rot" as string]: `${spec.rotate ?? 0}deg`,
-        ["--t1s-delay" as string]: `${index * 90}ms`,
+        ...(spec.wrapAt ? { maxWidth: `${spec.wrapAt}%` } : null),
+        ["--trs-rot" as string]: `${spec.rotate ?? 0}deg`,
+        ["--trs-delay" as string]: `${index * 90}ms`,
       }}
     >
       <span
-        className="t1s-word__inner"
-        style={{ color: spec.color, fontSize: `clamp(20px, ${spec.size / 14.49}vw, ${spec.size}px)` }}
+        className="trs-word__inner"
+        data-font={spec.font}
+        style={{
+          color: spec.color,
+          fontSize: `clamp(20px, ${(spec.size / 14.49).toFixed(2)}vw, ${spec.size}px)`,
+        }}
       >
         {spec.text}
       </span>
