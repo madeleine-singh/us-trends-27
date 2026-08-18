@@ -61,13 +61,51 @@
   transform: translateY(-50%);
   z-index: 800;
 }
-.trs-rail__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+/* Scrim behind the labels. At rest the rail is only its tick marks, so there
+   is nothing covering the page; the scrim fades in with the labels, which do
+   overlay content. `transform` on .trs-rail makes a stacking context, so
+   z-index: -1 stays inside the rail rather than sinking behind the page.
+   Fixed width because the labels are out of flow — see below — and it fades
+   to nothing on the right so there is no hard edge. */
+.trs-rail::before {
+  content: "";
+  position: absolute;
+  inset: -22px auto -22px -30px;
+  /* Wide enough to hold the longest rail label ("The rise of mass
+     individuality", ~235px at 12px uppercase) plus its 44px offset and the
+     30px bleed on the left, and it stays near-opaque across all of that
+     before fading — a gradient that thins out mid-label defeats the point. */
+  width: 400px;
+  z-index: -1;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.74) 0%,
+    rgba(0, 0, 0, 0.72) 74%,
+    rgba(0, 0, 0, 0.42) 88%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.32s var(--ease);
+}
+.trs-rail:hover::before,
+.trs-rail:focus-within::before { opacity: 1; }
+
+.trs-rail__list {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
 .trs-rail__link {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 10px;
   text-decoration: none;
-  padding: 2px 0;
+  padding: 6px 0;
 }
 .trs-rail__tick {
   display: block;
@@ -76,23 +114,41 @@
   background: rgba(255, 255, 255, 0.3);
   transition: width 0.4s var(--ease), background-color 0.5s var(--ease);
 }
+/* Out of flow, so the rail box stays as narrow as its ticks. In flow the
+   invisible labels made the rail a ~235px strip of fixed, transparent
+   overlay that quietly ate clicks on the page beneath it.
+   The -50% centring is folded into `transform` rather than using the
+   independent `translate` property: with both declared on one rule,
+   Lightning CSS keeps `transform` and silently drops `translate`.
+   Hit-testing stays off until the rail opens, for the same click reason. */
 .trs-rail__label {
+  position: absolute;
+  left: 44px;
+  top: 50%;
+  white-space: nowrap;
+  pointer-events: none;
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(255, 255, 255, 0.72);
   opacity: 0;
-  transform: translateX(-4px);
+  transform: translate(-4px, -50%);
   transition: opacity 0.28s var(--ease), transform 0.28s var(--ease), color 0.5s var(--ease);
 }
+.trs-rail:hover .trs-rail__label,
+.trs-rail:focus-within .trs-rail__label { pointer-events: auto; }
 .trs-rail__link[data-past] .trs-rail__tick { background: rgba(255, 255, 255, 0.55); }
 .trs-rail__link[data-active] .trs-rail__tick { width: 34px; background: var(--purple); }
-.trs-rail__link[data-active] .trs-rail__label,
+
+/* Labels appear on hover only, never pinned open by the active state — a
+   persistent label sits over the page content, and the signal names are long.
+   Keyboard focus still reveals them, or the rail would be unusable without a
+   pointer. */
 .trs-rail:hover .trs-rail__label,
 .trs-rail__link:focus-visible .trs-rail__label {
   opacity: 1;
-  transform: translateX(0);
+  transform: translate(0, -50%);
 }
 .trs-rail__link[data-active] .trs-rail__label { color: #fff; }
 .trs-rail__link:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
@@ -104,6 +160,34 @@
 .trs-rail[data-theme="light"] .trs-rail__link[data-active] .trs-rail__tick { background: var(--purple); }
 .trs-rail[data-theme="light"] .trs-rail__link[data-active] .trs-rail__label { color: var(--purple-dk); }
 .trs-rail[data-theme="light"] .trs-rail__link:focus-visible { outline-color: #000; }
+
+/* The scrim is black in both themes, so over the light timeline section the
+   rail has to invert while it is open — dark ink on a black panel would be
+   unreadable. Ticks flip too, since the scrim covers them as well. */
+.trs-rail[data-theme="light"]:hover .trs-rail__tick,
+.trs-rail[data-theme="light"]:focus-within .trs-rail__tick {
+  background: rgba(255, 255, 255, 0.4);
+}
+.trs-rail[data-theme="light"]:hover .trs-rail__link[data-past] .trs-rail__tick,
+.trs-rail[data-theme="light"]:focus-within .trs-rail__link[data-past] .trs-rail__tick {
+  background: rgba(255, 255, 255, 0.6);
+}
+.trs-rail[data-theme="light"]:hover .trs-rail__label,
+.trs-rail[data-theme="light"]:focus-within .trs-rail__label {
+  color: rgba(255, 255, 255, 0.75);
+}
+.trs-rail[data-theme="light"]:hover .trs-rail__link[data-active] .trs-rail__label,
+.trs-rail[data-theme="light"]:focus-within .trs-rail__link[data-active] .trs-rail__label {
+  color: #fff;
+}
+.trs-rail[data-theme="light"]:hover .trs-rail__link[data-active] .trs-rail__tick,
+.trs-rail[data-theme="light"]:focus-within .trs-rail__link[data-active] .trs-rail__tick {
+  background: var(--purple-lt);
+}
+.trs-rail[data-theme="light"]:hover .trs-rail__link:focus-visible,
+.trs-rail[data-theme="light"]:focus-within .trs-rail__link:focus-visible {
+  outline-color: #fff;
+}
 
 /* ── Hero ────────────────────────────────────────────────────── */
 /* <main> already offsets the fixed nav with padding-top: var(--nav-h), so the
