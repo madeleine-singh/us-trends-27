@@ -28,6 +28,21 @@ export function Stage({
   );
 }
 
+/** Outbound arrow used on the caption's source line and the link-only badge. */
+function Arrow() {
+  return (
+    <svg viewBox="0 0 12 12" aria-hidden="true" focusable="false">
+      <path
+        d="M3 9L9 3M9 3H4.2M9 3v4.8"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinecap="square"
+      />
+    </svg>
+  );
+}
+
 export function DropImage({
   spec,
   index = 0,
@@ -52,18 +67,34 @@ export function DropImage({
     [parallaxRef, inViewRef]
   );
 
+  /* A drop flips only if the photo library gave it a caption. Two rows are
+     marked "no caption needed, just direct navigation to hyperlink" — those
+     link straight to the source with no caption to reveal, so hover/focus
+     darkens the photo instead of flipping it. */
   const flippable = Boolean(spec.caption);
+  const linked = Boolean(spec.source);
 
   const faces = (
     <span className="trs-drop__flip">
       <span className="trs-drop__face trs-drop__face--front">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={spec.src} alt={spec.alt} loading="lazy" decoding="async" />
+        {linked && !flippable && (
+          <span className="trs-drop__overlay" aria-hidden="true">
+            View source
+            <Arrow />
+          </span>
+        )}
       </span>
       {flippable && (
         <span className="trs-drop__face trs-drop__face--back">
           <span className="trs-drop__caption">{spec.caption}</span>
-          {spec.source && <span className="trs-drop__source">View source</span>}
+          {linked && (
+            <span className="trs-drop__source" aria-hidden="true">
+              View source
+              <Arrow />
+            </span>
+          )}
         </span>
       )}
     </span>
@@ -94,6 +125,7 @@ export function DropImage({
           rel="noopener noreferrer"
         >
           {faces}
+          <span className="trs-sr"> (opens the source in a new tab)</span>
         </a>
       ) : (
         <span className="trs-drop__inner" tabIndex={flippable ? 0 : undefined}>

@@ -25,9 +25,20 @@ export type DropSpec = {
   h: number;
   rate: number;
   rotate?: number;
-  /** TODO: supplied from the image Excel. Enables the hover/focus flip. */
+  /**
+   * The image's layer name in the Figma frame. This is the join key between the
+   * design and column H of `materials/photos-library.md`, so a re-export from
+   * Figma can be matched back to its caption and link without guesswork.
+   */
+  layer?: string;
+  /**
+   * Column E of `materials/photos-library.md`, verbatim. Present means the drop
+   * flips on hover/focus to show the caption. Two rows in the sheet are marked
+   * "no caption needed, just direct navigation to hyperlink" — those carry a
+   * `source` but no caption, so they link without flipping.
+   */
   caption?: string;
-  /** TODO: supplied from the image Excel. Makes the drop a link to the source. */
+  /** Column I of the photo library — where the image navigates on click. */
   source?: string;
 };
 
@@ -46,7 +57,8 @@ export type WordFont =
   | "diphylleia"
   | "baloo"
   | "azeret"
-  | "geom";
+  | "geom"
+  | "abhaya";
 
 export type WordSpec = {
   id: string;
@@ -104,7 +116,15 @@ export type TrendContent = {
   metaTitle: string;
   metaDescription: string;
 
-  hero: { kicker: string; presents: string; title: string };
+  hero: {
+    kicker: string;
+    presents: string;
+    title: string;
+    /** When set, the hero renders as a dark full-bleed photo (Trend 2, Figma
+        node 170:559) instead of the light animated mesh (Trend 1). Also
+        switches the title to the monospace display face. */
+    backdrop?: string;
+  };
 
   /** Revealed word by word as the pinned scene is scrolled through. */
   coreThought: string[];
@@ -114,6 +134,10 @@ export type TrendContent = {
     title: string;
     caption: string;
     disclaimer: string;
+    /** Selects which chart TimelineScene renders. Defaults to the hand-drawn
+        signature line (Trend 1). Trend 2's Figma frame draws a different
+        chart, so it opts into "trust" instead of adding new content fields. */
+    chart?: "trust";
   };
 
   intro: { title: string; lede: string; backdrop: string };

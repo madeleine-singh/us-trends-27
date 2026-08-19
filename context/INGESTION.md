@@ -19,3 +19,4 @@ on re-run, and automatically at the start of any task (CLAUDE.md pre-flight).
 | 2026-08-05 | Trends 2027 Pitches Combined.pdf | materials/ | cataloged | materials/Trends 2027 Pitches Combined.pdf |
 | 2026-08-05 | Aug5 Microsite Feedback.docx | context/ | linked | context/Aug5 Microsite Feedback.docx |
 | 2026-08-13 | Aug4 Microsite Feedback_v1.docx | context/ | linked | context/Aug4 Microsite Feedback_v1.docx |
+| 2026-08-19 | photos-library.xlsx | materials/ | converted | materials/photos-library.md |

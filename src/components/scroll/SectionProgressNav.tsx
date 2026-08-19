@@ -8,21 +8,23 @@ import { useActiveSection, useLightZone } from "./motion";
  * Persistent vertical section-progress rail ("sticky scroll" in the Figma).
  * This sits alongside the site nav rather than replacing it.
  *
- * The rail is fixed, so it has to survive passing over the light timeline
- * section: `lightZone` names the blend bands either side of that stretch and
- * flips the rail to dark ink and purple while it is over them.
+ * The rail is fixed, so it has to survive passing over the pale stretches of
+ * the page — the lavender hero and the light timeline section. Each entry in
+ * `lightZones` names the blend bands either side of one such stretch, and the
+ * rail flips to dark ink while it is over any of them. A zone with no
+ * `fadeInId` starts at the top of the document.
  */
 export default function SectionProgressNav({
   stops,
-  lightZone,
+  lightZones = [],
 }: {
   stops: Stop[];
-  lightZone?: { fadeInId: string; fadeOutId: string };
+  lightZones?: { fadeInId?: string; fadeOutId: string }[];
 }) {
   const ids = useMemo(() => stops.map((s) => s.id), [stops]);
   const active = useActiveSection(ids);
   const activeIndex = Math.max(0, ids.indexOf(active));
-  const light = useLightZone(lightZone?.fadeInId ?? "", lightZone?.fadeOutId ?? "");
+  const light = useLightZone(lightZones);
 
   return (
     <nav

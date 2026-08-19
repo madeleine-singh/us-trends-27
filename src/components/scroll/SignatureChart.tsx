@@ -1,6 +1,12 @@
 "use client";
 
+import { useLayoutEffect, useRef, useState } from "react";
 import { useReducedMotion } from "./motion";
+
+/* Bigger than either curve could plausibly measure, so the one frame before
+   the layout effect below runs still renders fully hidden instead of
+   flashing the whole line visible. */
+const FALLBACK_LENGTH = 3000;
 
 /* Geometry is carried over from the Figma chart frame (node 142:8422).
    viewBox runs to 1000 so the signature flourish has room past 2027. */
@@ -42,7 +48,7 @@ const MARKERS = [
     id: "peak",
     ...PEAK,
     needs: { velocity: 0.328 },
-    box: { x: 130, anchor: "bottom" as const, y: 133 },
+    box: { x: 95, anchor: "bottom" as const, y: 175 },
     label: "Peak",
     body: "WGSN identifies a new “core” every few weeks at the height of the TikTok micro trend cycle.",
   },
@@ -90,6 +96,25 @@ export default function SignatureChart({
   const velocityDraw = segment(p, 0.06, 0.52);
   const authorshipDraw = segment(p, 0.2, 0.86);
 
+  /* Dashing off a declared `pathLength` normalizes the two curves onto a
+     0-1 scale, but the browser has to reparametrize these long, many-segment
+     beziers to fit that scale, and the estimate is a hair off right at the
+     far end of each path — enough that a sliver of the last segment (the
+     signature's tail loop, and the velocity line's decline past 2026) shows
+     through even at draw = 0. Measuring each path's real length with
+     getTotalLength() and dashing in that native unit sidesteps the
+     reparametrization entirely, since it's the same length the renderer
+     already uses internally to stroke the path. */
+  const velocityRef = useRef<SVGPathElement>(null);
+  const authorshipRef = useRef<SVGPathElement>(null);
+  const [velocityLen, setVelocityLen] = useState(FALLBACK_LENGTH);
+  const [authorshipLen, setAuthorshipLen] = useState(FALLBACK_LENGTH);
+
+  useLayoutEffect(() => {
+    if (velocityRef.current) setVelocityLen(velocityRef.current.getTotalLength());
+    if (authorshipRef.current) setAuthorshipLen(authorshipRef.current.getTotalLength());
+  }, []);
+
   const isShown = (needs: { velocity?: number; authorship?: number }) =>
     (needs.velocity === undefined || velocityDraw >= needs.velocity) &&
     (needs.authorship === undefined || authorshipDraw >= needs.authorship);
@@ -132,17 +157,23 @@ export default function SignatureChart({
             ))}
 
             <path
+              ref={velocityRef}
               d={VELOCITY_PATH}
               className="trs-chart__line trs-chart__line--velocity"
-              pathLength={1}
-              style={{ strokeDashoffset: 1 - velocityDraw }}
+              style={{
+                strokeDasharray: velocityLen,
+                strokeDashoffset: velocityLen * (1 - velocityDraw),
+              }}
               vectorEffect="non-scaling-stroke"
             />
             <path
+              ref={authorshipRef}
               d={AUTHORSHIP_PATH}
               className="trs-chart__line trs-chart__line--authorship"
-              pathLength={1}
-              style={{ strokeDashoffset: 1 - authorshipDraw }}
+              style={{
+                strokeDasharray: authorshipLen,
+                strokeDashoffset: authorshipLen * (1 - authorshipDraw),
+              }}
               vectorEffect="non-scaling-stroke"
             />
 

@@ -17,9 +17,13 @@ const LAST_WORD = 0.72;
 export default function CoreThoughtScene({
   paragraphs,
   watermark,
+  mono = false,
 }: {
   paragraphs: string[];
   watermark: string;
+  /** Trend 2's watermark repeats the typed-receipt hero face instead of
+      Trend 1's script, so it doesn't clash with the photo hero above it. */
+  mono?: boolean;
 }) {
   const reduced = useReducedMotion();
   const { ref, progress } = useRunwayProgress<HTMLDivElement>();
@@ -40,13 +44,13 @@ export default function CoreThoughtScene({
   return (
     <div className="trs-core__runway" ref={ref}>
       <div className="trs-core__pin">
-        <div className="trs-core__mark" aria-hidden="true">
+        <div className={`trs-core__mark ${mono ? "trs-core__mark--mono" : ""}`} aria-hidden="true">
           <span>{watermark}</span>
           <span>{watermark}</span>
         </div>
 
         <div className="trs-core__inner">
-          <p className="eyebrow trs-reveal" data-shown={p >= 0.05 ? "" : undefined}>
+          <p className="eyebrow trs-core__eyebrow trs-reveal" data-shown={p >= 0.05 ? "" : undefined}>
             Core thought
           </p>
           {blocks.map((words, b) => (

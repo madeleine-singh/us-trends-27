@@ -1,4 +1,5 @@
 import {
+  Abhaya_Libre,
   Azeret_Mono,
   Baloo_2,
   Comic_Neue,
@@ -75,6 +76,12 @@ const azeret = Azeret_Mono({
   weight: "600",
   variable: "--font-w-azeret",
 });
+const abhaya = Abhaya_Libre({
+  subsets: ["latin"],
+  display: "swap",
+  weight: "700",
+  variable: "--font-w-abhaya",
+});
 const geom = Poppins({
   subsets: ["latin"],
   display: "swap",
@@ -93,4 +100,5 @@ export const wordFontClass = [
   baloo.variable,
   azeret.variable,
   geom.variable,
+  abhaya.variable,
 ].join(" ");

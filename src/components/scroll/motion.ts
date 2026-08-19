@@ -170,23 +170,32 @@ export function useRunwayProgress<T extends HTMLElement>() {
  * measured against the two blend bands that fade into and out of it.
  * Used to flip the fixed progress rail to dark ink.
  */
-export function useLightZone(fadeInId: string, fadeOutId: string) {
+export function useLightZone(zones: { fadeInId?: string; fadeOutId: string }[]) {
+  const key = zones.map((z) => `${z.fadeInId ?? ""}>${z.fadeOutId}`).join("|");
   return useScrollValue<boolean>(
     () => {
-      const a = document.getElementById(fadeInId);
-      const b = document.getElementById(fadeOutId);
-      if (!a || !b) return undefined;
       const mid = window.innerHeight / 2;
-      const ar = a.getBoundingClientRect();
-      const br = b.getBoundingClientRect();
-      // Switch once the incoming fade is mostly light, and back before the
-      // outgoing fade gets too dark.
-      const start = ar.top + ar.height * 0.55;
-      const end = br.top + br.height * 0.45;
-      return mid >= start && mid <= end;
+      for (const zone of zones) {
+        const b = document.getElementById(zone.fadeOutId);
+        if (!b) continue;
+        // A zone with no incoming band starts at the top of the document —
+        // that is the hero, which is light from the first pixel.
+        let start = -Infinity;
+        if (zone.fadeInId) {
+          const a = document.getElementById(zone.fadeInId);
+          if (!a) continue;
+          const ar = a.getBoundingClientRect();
+          // Switch once the incoming fade is mostly light...
+          start = ar.top + ar.height * 0.55;
+        }
+        // ...and back before the outgoing fade gets too dark.
+        const end = b.getBoundingClientRect().top + b.getBoundingClientRect().height * 0.45;
+        if (mid >= start && mid <= end) return true;
+      }
+      return false;
     },
     false,
-    [fadeInId, fadeOutId]
+    [key]
   );
 }
 

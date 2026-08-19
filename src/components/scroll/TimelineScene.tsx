@@ -2,6 +2,7 @@
 
 import { useRunwayProgress } from "./motion";
 import SignatureChart from "./SignatureChart";
+import TrustChart from "./TrustChart";
 import type { TrendContent } from "@/content/trends/types";
 
 /**
@@ -17,11 +18,19 @@ export default function TimelineScene({ timeline }: { timeline: TrendContent["ti
         <div className="trs-shell">
           <p className="eyebrow">{timeline.eyebrow}</p>
           <h2 className="trs-h2 trs-h2--dark">{timeline.title}</h2>
-          <SignatureChart
-            progress={progress}
-            caption={timeline.caption}
-            disclaimer={timeline.disclaimer}
-          />
+          {timeline.chart === "trust" ? (
+            <TrustChart
+              progress={progress}
+              caption={timeline.caption}
+              disclaimer={timeline.disclaimer}
+            />
+          ) : (
+            <SignatureChart
+              progress={progress}
+              caption={timeline.caption}
+              disclaimer={timeline.disclaimer}
+            />
+          )}
         </div>
       </div>
     </div>

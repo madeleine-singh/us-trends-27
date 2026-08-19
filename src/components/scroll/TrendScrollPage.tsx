@@ -5,6 +5,7 @@ import ExpectScene from "./ExpectScene";
 import ImplicationCarousel from "./ImplicationCarousel";
 import { ProseParagraph } from "./Prose";
 import { DropImage, Stage, WordDrop } from "./Drops";
+import Reveal from "./Reveal";
 import { wordFontClass } from "./fonts";
 import type { TrendContent } from "@/content/trends/types";
 import "./scroll.css";
@@ -40,47 +41,66 @@ function Blend({
 
 const INK_DARK = "#202020";
 const INK_LIGHT = "#f1f1ef";
-const HERO_END = "#241033";
+/* Bottom stop of the hero's lavender mesh — the blend into the core thought
+   starts from this colour, so keep the two in step with `.trs-hero`. Photo
+   heroes (Trend 2) are already dark, so they blend from ink instead and skip
+   the light-zone the mesh hero needs for the rail to invert over it. */
+const HERO_END = "#6f52d6";
 
 export default function TrendScrollPage({ content }: { content: TrendContent }) {
   const { hero, coreThought, timeline, intro, signals, expect, implications, stops } = content;
+  const heroEnd = hero.backdrop ? INK_DARK : HERO_END;
 
   return (
     <div className={`trs ${wordFontClass}`}>
       <SectionProgressNav
         stops={stops}
-        lightZone={{ fadeInId: "blend-to-light", fadeOutId: "blend-to-dark" }}
+        lightZones={[
+          ...(hero.backdrop ? [] : [{ fadeOutId: "blend-hero-out" }]),
+          { fadeInId: "blend-to-light", fadeOutId: "blend-to-dark" },
+        ]}
       />
 
       {/* ── Hero ───────────────────────────────────────────────── */}
-      <section id="hero" className="trs-hero on-dark">
-        <div className="trs-hero__backdrop" aria-hidden="true">
-          <span className="trs-orb trs-orb--a" />
-          <span className="trs-orb trs-orb--b" />
-          <span className="trs-orb trs-orb--c" />
-        </div>
+      <section id="hero" className={`trs-hero on-dark ${hero.backdrop ? "trs-hero--photo" : ""}`}>
+        {hero.backdrop ? (
+          <div className="trs-hero__backdrop trs-hero__backdrop--photo" aria-hidden="true">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={hero.backdrop} alt="" className="trs-hero__photo" />
+            <span className="trs-hero__scrim" />
+          </div>
+        ) : (
+          <div className="trs-hero__backdrop" aria-hidden="true">
+            <span className="trs-orb trs-orb--a" />
+            <span className="trs-orb trs-orb--b" />
+            <span className="trs-orb trs-orb--c" />
+            <span className="trs-hero__wash" />
+          </div>
+        )}
 
         <div className="trs-hero__content">
           <p className="trs-hero__presents">
             <span className="trs-hero__kicker">{hero.kicker}</span>
             {hero.presents}
           </p>
-          <h1 className="trs-hero__title">{hero.title}</h1>
+          <h1 className={`trs-hero__title ${hero.backdrop ? "trs-hero__title--mono" : ""}`}>
+            {hero.title}
+          </h1>
         </div>
 
         <a className="trs-jump" href="#core-thought">
-          <span>Begin</span>
+          <span>Scroll</span>
           <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
             <path d="M12 4v15m0 0l-6-6m6 6l6-6" fill="none" stroke="currentColor" strokeWidth="1.5" />
           </svg>
         </a>
       </section>
 
-      <Blend from={HERO_END} to={INK_DARK} height="90vh" />
+      <Blend id="blend-hero-out" from={heroEnd} to={INK_DARK} height="90vh" />
 
       {/* ── Core thought ───────────────────────────────────────── */}
       <section id="core-thought" className="trs-core on-dark">
-        <CoreThoughtScene paragraphs={coreThought} watermark={hero.title} />
+        <CoreThoughtScene paragraphs={coreThought} watermark={hero.title} mono={Boolean(hero.backdrop)} />
       </section>
 
       <Blend id="blend-to-light" from={INK_DARK} to={INK_LIGHT} height="120vh" />
@@ -100,8 +120,12 @@ export default function TrendScrollPage({ content }: { content: TrendContent }) 
           aria-hidden="true"
         />
         <div className="trs-shell trs-shell--narrow">
-          <h2 className="trs-h2 trs-h2--display trs-center">{intro.title}</h2>
-          <p className="trs-intro__lede">{intro.lede}</p>
+          <Reveal>
+            <h2 className="trs-h2 trs-h2--display trs-center">{intro.title}</h2>
+          </Reveal>
+          <Reveal delay={120}>
+            <p className="trs-intro__lede">{intro.lede}</p>
+          </Reveal>
         </div>
       </section>
 

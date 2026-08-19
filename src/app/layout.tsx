@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Alex_Brush, DM_Sans } from "next/font/google";
+import { Alex_Brush, Cormorant_Garamond, DM_Mono, DM_Sans } from "next/font/google";
 import "./globals.css";
 import SiteShell from "@/components/SiteShell";
 
@@ -18,6 +18,24 @@ const alexBrush = Alex_Brush({
   display: "swap",
 });
 
+// Monospace face for the Trend 2 scrollytelling hero only (Figma node 170:563,
+// DM Mono Medium) — the "typed receipt" counterpart to Trend 1's script hero.
+const dmMono = DM_Mono({
+  variable: "--font-mono-display",
+  subsets: ["latin"],
+  weight: "500",
+  display: "swap",
+});
+
+// Editorial serif standing in for GT Sectra Fine (design/design.md), used for
+// the scrollytelling core-thought scenes on both trend pages.
+const cormorantGaramond = Cormorant_Garamond({
+  variable: "--font-editorial",
+  subsets: ["latin"],
+  weight: ["600", "700"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "US Trends 2027 — Accenture Song D&DP",
   description:
@@ -30,7 +48,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${dmSans.variable} ${alexBrush.variable}`}
+      className={`${dmSans.variable} ${alexBrush.variable} ${dmMono.variable} ${cormorantGaramond.variable}`}
     >
       <body>
         {/* Skip to main content — first focusable element */}
