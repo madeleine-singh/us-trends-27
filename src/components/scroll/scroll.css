@@ -75,36 +75,6 @@
   transform: translateY(-50%);
   z-index: 800;
 }
-/* Scrim behind the labels. At rest the rail is only its tick marks, so there
-   is nothing covering the page; the scrim fades in with the labels, which do
-   overlay content. `transform` on .trs-rail makes a stacking context, so
-   z-index: -1 stays inside the rail rather than sinking behind the page.
-   Fixed width because the labels are out of flow — see below — and it fades
-   to nothing on the right so there is no hard edge. */
-.trs-rail::before {
-  content: "";
-  position: absolute;
-  inset: -22px auto -22px -30px;
-  /* Wide enough to hold the longest rail label ("The rise of mass
-     individuality", ~235px at 12px uppercase) plus its 44px offset and the
-     30px bleed on the left, and it stays near-opaque across all of that
-     before fading — a gradient that thins out mid-label defeats the point. */
-  width: 400px;
-  z-index: -1;
-  background: linear-gradient(
-    90deg,
-    rgba(0, 0, 0, 0.74) 0%,
-    rgba(0, 0, 0, 0.72) 74%,
-    rgba(0, 0, 0, 0.42) 88%,
-    rgba(0, 0, 0, 0) 100%
-  );
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.32s var(--ease);
-}
-.trs-rail:hover::before,
-.trs-rail:focus-within::before { opacity: 1; }
-
 .trs-rail__list {
   position: relative;
   list-style: none;
@@ -138,6 +108,8 @@
    independent `translate` property: with both declared on one rule,
    Lightning CSS keeps `transform` and silently drops `translate`.
    Hit-testing stays off until the rail opens, for the same click reason. */
+/* No backing scrim behind the label — a text-shadow instead holds it
+   legible over whatever photo or copy happens to sit under the rail. */
 .trs-rail__label {
   position: absolute;
   left: 44px;
@@ -149,21 +121,26 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.72);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85), 0 0 12px rgba(0, 0, 0, 0.6);
   opacity: 0;
   transform: translate(-4px, -50%);
   transition: opacity 0.28s var(--ease), transform 0.28s var(--ease), color 0.5s var(--ease);
 }
 .trs-rail:hover .trs-rail__label,
-.trs-rail:focus-within .trs-rail__label { pointer-events: auto; }
+.trs-rail:focus-within .trs-rail__label,
+.trs-rail[data-pulse] .trs-rail__label { pointer-events: auto; }
 .trs-rail__link[data-past] .trs-rail__tick { background: rgba(255, 255, 255, 0.7); }
 .trs-rail__link[data-active] .trs-rail__tick { width: 34px; background: var(--purple); }
 
-/* Labels appear on hover only, never pinned open by the active state — a
-   persistent label sits over the page content, and the signal names are long.
-   Keyboard focus still reveals them, or the rail would be unusable without a
-   pointer. */
+/* Labels appear on hover, and briefly on their own the moment a section
+   becomes active (`[data-pulse]`, cleared once the user scrolls further —
+   see SectionProgressNav) — never pinned open by the active state alone, or
+   a persistent label would sit over the page content for as long as a long
+   section is on screen. Keyboard focus still reveals them too, or the rail
+   would be unusable without a pointer. */
 .trs-rail:hover .trs-rail__label,
-.trs-rail__link:focus-visible .trs-rail__label {
+.trs-rail__link:focus-visible .trs-rail__label,
+.trs-rail[data-pulse] .trs-rail__link[data-active] .trs-rail__label {
   opacity: 1;
   transform: translate(0, -50%);
 }
@@ -172,41 +149,18 @@
 
 /* Dark ink while the rail passes over the lavender hero or the light timeline
    section. The active tick takes --purple-dk rather than --purple: #A100FF
-   measures 1.9:1 on the hero mesh, #7500C0 clears 3:1 on both. */
+   measures 1.9:1 on the hero mesh, #7500C0 clears 3:1 on both. No scrim
+   behind the label here either, so its text-shadow flips to a light halo
+   instead of the dark one the default (on-dark) label uses. */
 .trs-rail[data-theme="light"] .trs-rail__tick { background: rgba(0, 0, 0, 0.55); }
-.trs-rail[data-theme="light"] .trs-rail__label { color: #555; }
+.trs-rail[data-theme="light"] .trs-rail__label {
+  color: #555;
+  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.9), 0 0 12px rgba(255, 255, 255, 0.75);
+}
 .trs-rail[data-theme="light"] .trs-rail__link[data-past] .trs-rail__tick { background: rgba(0, 0, 0, 0.72); }
 .trs-rail[data-theme="light"] .trs-rail__link[data-active] .trs-rail__tick { background: var(--purple-dk); }
 .trs-rail[data-theme="light"] .trs-rail__link[data-active] .trs-rail__label { color: var(--purple-dk); }
 .trs-rail[data-theme="light"] .trs-rail__link:focus-visible { outline-color: #000; }
-
-/* The scrim is black in both themes, so over the light timeline section the
-   rail has to invert while it is open — dark ink on a black panel would be
-   unreadable. Ticks flip too, since the scrim covers them as well. */
-.trs-rail[data-theme="light"]:hover .trs-rail__tick,
-.trs-rail[data-theme="light"]:focus-within .trs-rail__tick {
-  background: rgba(255, 255, 255, 0.4);
-}
-.trs-rail[data-theme="light"]:hover .trs-rail__link[data-past] .trs-rail__tick,
-.trs-rail[data-theme="light"]:focus-within .trs-rail__link[data-past] .trs-rail__tick {
-  background: rgba(255, 255, 255, 0.6);
-}
-.trs-rail[data-theme="light"]:hover .trs-rail__label,
-.trs-rail[data-theme="light"]:focus-within .trs-rail__label {
-  color: rgba(255, 255, 255, 0.75);
-}
-.trs-rail[data-theme="light"]:hover .trs-rail__link[data-active] .trs-rail__label,
-.trs-rail[data-theme="light"]:focus-within .trs-rail__link[data-active] .trs-rail__label {
-  color: #fff;
-}
-.trs-rail[data-theme="light"]:hover .trs-rail__link[data-active] .trs-rail__tick,
-.trs-rail[data-theme="light"]:focus-within .trs-rail__link[data-active] .trs-rail__tick {
-  background: var(--purple-lt);
-}
-.trs-rail[data-theme="light"]:hover .trs-rail__link:focus-visible,
-.trs-rail[data-theme="light"]:focus-within .trs-rail__link:focus-visible {
-  outline-color: #fff;
-}
 
 /* ── Hero ────────────────────────────────────────────────────── */
 /* <main> already offsets the fixed nav with padding-top: var(--nav-h), so the
@@ -457,15 +411,22 @@
 .trs-timeline__pin {
   position: sticky;
   top: var(--nav-h);
-  min-height: calc(100vh - var(--nav-h));
-  min-height: calc(100svh - var(--nav-h));
+  height: calc(100vh - var(--nav-h));
+  height: calc(100svh - var(--nav-h));
   display: flex;
   align-items: center;
-  padding: 32px 0 40px;
+  padding: 16px 0 20px;
+  overflow: hidden;
 }
+.trs-timeline__pin .trs-shell { max-height: 100%; }
 
-.trs-chart { margin-top: clamp(24px, 3vw, 48px); }
-.trs-chart__legend { display: flex; flex-wrap: wrap; gap: 24px; margin-bottom: 20px; }
+/* Capped so the chart plus its chrome (heading, legend, caption) has a real
+   shot at fitting inside the pin at common laptop heights — see
+   .trs-timeline__pin above. Aspect-ratio keeps height locked to width, so
+   this shrinks both together instead of just clipping. */
+.trs-chart__figure { max-width: 920px; margin-inline: auto; }
+.trs-chart { margin-top: clamp(12px, 1.6vw, 24px); }
+.trs-chart__legend { display: flex; flex-wrap: wrap; gap: 24px; margin-bottom: 10px; }
 .trs-chart__key {
   display: inline-flex;
   align-items: center;
@@ -538,7 +499,7 @@
 }
 .trs-chart__tip-body { font-size: 13px; line-height: 1.42; color: #555; }
 
-.trs-chart__axis { position: relative; height: 30px; margin-top: 10px; }
+.trs-chart__axis { position: relative; height: 26px; margin-top: 6px; }
 .trs-chart__axis span {
   position: absolute;
   transform: translateX(-50%);
@@ -546,10 +507,10 @@
   font-weight: 600;
   color: var(--gray-600);
 }
-.trs-chart__caption { margin: clamp(20px, 2.5vw, 32px) 0 0; max-width: 720px; }
-.trs-chart__caption p { font-size: 15px; line-height: 1.7; color: var(--gray-600); margin: 0; }
+.trs-chart__caption { margin: clamp(10px, 1.4vw, 18px) 0 0; max-width: 720px; }
+.trs-chart__caption p { font-size: 15px; line-height: 1.5; color: var(--gray-600); margin: 0; }
 .trs-chart__disclaimer {
-  margin-top: 12px !important;
+  margin-top: 8px !important;
   font-size: 12px !important;
   font-weight: 600;
   letter-spacing: 0.12em;
@@ -618,10 +579,20 @@
 }
 
 /* ── Intro ───────────────────────────────────────────────────── */
-.trs-intro {
-  position: relative;
-  background: var(--trs-bg);
-  padding: clamp(120px, 18vw, 260px) 0;
+.trs-intro { background: var(--trs-bg); }
+/* Pinned exactly like the core thought scene (same runway/pin pair, same
+   reveal window in IntroReveal.tsx) — the section holds still with its
+   words building in until the last one lands, rather than letting normal
+   scroll carry the page past it mid-reveal. */
+.trs-intro__runway { position: relative; height: 190vh; }
+.trs-intro__pin {
+  position: sticky;
+  top: var(--nav-h);
+  min-height: calc(100vh - var(--nav-h));
+  min-height: calc(100svh - var(--nav-h));
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
   overflow: hidden;
 }
@@ -651,6 +622,44 @@
   margin: clamp(20px, 3vw, 36px) auto 0;
   max-width: 40ch;
 }
+/* Word-by-word build while the scene is pinned, same mechanic (and same
+   0 -> 1 opacity only, never a dimmed in-between) as .trs-core__word. */
+.trs-intro__word {
+  display: inline-block;
+  opacity: 0;
+  transform: translate3d(0, 0.3em, 0);
+  transition: opacity 0.5s var(--trs-ease-enter), transform 0.6s var(--trs-ease-enter);
+}
+.trs-intro__word[data-shown] { opacity: 1; transform: none; }
+
+/* Trend 2's "what we saw" (Figma 170:581): the photo runs at full strength
+   under a flat 55% scrim instead of Trend 1's faint edge-masked texture, so
+   it needs its own opacity/mask rules and a heavier vignette behind the
+   copy — the source photo is busy enough (protest signage, streetlights)
+   that a flat scrim alone doesn't reliably clear 4.5:1 for the title/lede. */
+.trs-intro__bg--strong {
+  inset: 0;
+  opacity: 1;
+  mask-image: none;
+  -webkit-mask-image: none;
+}
+.trs-intro__scrim {
+  position: absolute;
+  inset: 0;
+  /* Figma specs a flat 55% scrim; a light vignette on top of it holds
+     the title/lede readable over the photo's brighter patches (streetlights,
+     pale signage) without darkening the frame edges as much. */
+  background: rgba(0, 0, 0, 0.55);
+  pointer-events: none;
+}
+.trs-intro__scrim::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(60% 55% at 50% 50%, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0) 100%);
+}
+.trs-intro--strong .trs-shell--narrow { max-width: 1000px; }
+.trs-intro--strong .trs-intro__lede { max-width: 62ch; }
 
 /* ── Signals ─────────────────────────────────────────────────── */
 /* Figma nodes 110:3040 / 144:8585 (and the Sig2 / Sig3 equivalents) put the
@@ -680,9 +689,13 @@
 .trs-signal__media {
   grid-area: media;
   position: relative;
-  --trs-fall: 52vh;
-  --trs-fall-dur: 1.9s;
-  --trs-fade-dur: 0.9s;
+  /* Short and quick rather than a long, slow drift: with each photo
+     triggering independently as it scrolls into view, a fall this brief
+     is what keeps drops landing one at a time instead of several still
+     mid-fall — and possibly crossing paths — at once. */
+  --trs-fall: 18vh;
+  --trs-fall-dur: 0.6s;
+  --trs-fade-dur: 0.4s;
 }
 .trs-signal__text {
   grid-area: text;
@@ -723,7 +736,6 @@
   display: block;
   width: 100%;
   height: 100%;
-  perspective: 1000px;
   opacity: 0;
   transform: translate3d(0, calc(-1 * var(--trs-fall, 120px)), 0)
     rotate(calc(var(--trs-rot, 0deg) - 8deg)) scale(0.92);
@@ -736,42 +748,42 @@
   opacity: 1;
   transform: translate3d(0, 0, 0) rotate(var(--trs-rot, 0deg)) scale(1);
 }
-.trs-drop__inner:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+/* Accessible blue rather than the site's usual white ring — called out
+   specifically so it reads as a distinct, deliberate focus style against
+   photos of any brightness, not just another hover echo. #2F6FED clears
+   3:1 against both black and white. */
+.trs-drop__inner:focus-visible { outline: 3px solid #2F6FED; outline-offset: 3px; }
 
-.trs-drop__flip {
-  display: block;
-  position: relative;
-  width: 100%;
-  height: 100%;
-  transform-style: preserve-3d;
-  transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.trs-drop__face { position: absolute; inset: 0; backface-visibility: hidden; }
-.trs-drop__face--front { overflow: hidden; }
-.trs-drop__face--front img { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* No overflow: hidden here — the overlay below needs to grow past the
+   frame's own bottom edge for long captions. The image doesn't need the
+   clip anyway: object-fit: cover already keeps it inside its own box. */
+.trs-drop__frame { display: block; position: relative; width: 100%; height: 100%; }
+.trs-drop__frame img { display: block; width: 100%; height: 100%; object-fit: cover; }
 
-/* The captions run from 140 to 380 characters, and the smallest drop is only
-   ~200x135px on a 1440 viewport, so a fixed-size back face would clip most of
-   them. The card is pinned to the drop's top and left/right edges and allowed
-   to grow downward instead: horizontal growth is impossible without hitting the
-   stage's clip, vertical space is free. Hover survives the overhang because
-   :hover propagates from the caption up to .trs-drop__inner. */
-.trs-drop__face--back {
+/* No flip: hover/focus darkens the photo in place and surfaces its caption
+   and/or source line on top of it. Captions run 140-380 characters and the
+   smallest drop is only ~200x135px on a 1440 viewport, so a fixed-size
+   overlay would clip most of them — pinned to the drop's top/left/right and
+   left to grow downward instead, since horizontal growth would hit the
+   stage's clip and vertical space is free. Hover survives the overhang
+   because :hover is keyed off .trs-drop__inner, not the overlay itself. */
+.trs-drop__overlay {
+  position: absolute;
   inset: 0 0 auto 0;
   height: auto;
   min-height: 100%;
-  transform: rotateY(180deg);
-  background: #fff;
-  color: #202020;
+  background: rgba(0, 0, 0, 0.9);
+  color: #fff;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   gap: 10px;
   padding: 14px 16px;
+  opacity: 0;
+  transition: opacity 0.22s ease;
 }
 .trs-drop__caption { font-size: 14px; line-height: 1.5; }
-.trs-drop__source,
-.trs-drop__overlay {
+.trs-drop__source {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -779,38 +791,38 @@
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-}
-.trs-drop__source svg,
-.trs-drop__overlay svg { width: 11px; height: 11px; flex: none; }
-/* 7.1:1 on white. */
-.trs-drop__source { margin-top: auto; color: var(--purple-dk); }
-
-/* Link-only drops have no caption to flip to, so the whole photo darkens on
-   hover/focus and the entire card is the click target straight to the source. */
-.trs-drop__overlay {
-  position: absolute;
-  inset: 0;
-  justify-content: center;
-  /* 0.7 flat, not a gradient: this label has no body copy sitting over a
-     bright sky or wall in the photo behind it, so a uniform darken is enough
-     to hold 4.5:1 for the white label regardless of the source image. */
-  background: rgba(0, 0, 0, 0.7);
+  margin-top: auto;
   color: #fff;
-  opacity: 0;
-  transition: opacity 0.2s ease;
 }
+.trs-drop__source svg { width: 11px; height: 11px; flex: none; }
+/* No caption to anchor against, so the source line sits centred on the
+   photo instead of pinned to the bottom of a (non-existent) caption block. */
+.trs-drop__overlay[data-source-only] { justify-content: center; align-items: center; }
+.trs-drop__overlay[data-source-only] .trs-drop__source { margin-top: 0; }
 
 /* z-index so an expanded caption sits over its neighbours rather than under
    the next drop to fall. */
 .trs-drop:hover,
 .trs-drop:focus-within { z-index: 4; }
 
+/* Most drops don't need any of this: the overlay already grows downward to
+   fit its own caption (see .trs-drop__overlay) regardless of the photo's
+   size. Scaling the whole photo up on hover is reserved for drops flagged
+   [data-grow] — narrow or short enough that even after growing, the
+   overlay comes out disproportionately tall (many wrapped lines in a
+   cramped column) rather than a reasonable few. That flag is measured at
+   runtime in Drops.tsx, not guessed here. Overlapping a neighbour when it
+   does grow is expected and fine, per the design call. */
 @media (hover: hover) and (pointer: fine) {
-  .trs-drop__inner:hover .trs-drop__flip { transform: rotateY(180deg); }
   .trs-drop__inner:hover .trs-drop__overlay { opacity: 1; }
+  .trs-drop[data-in][data-grow] .trs-drop__inner:hover {
+    transform: translate3d(0, 0, 0) rotate(var(--trs-rot, 0deg)) scale(1.4);
+  }
 }
-.trs-drop__inner:focus-visible .trs-drop__flip { transform: rotateY(180deg); }
 .trs-drop__inner:focus-visible .trs-drop__overlay { opacity: 1; }
+.trs-drop[data-in][data-grow] .trs-drop__inner:focus-visible {
+  transform: translate3d(0, 0, 0) rotate(var(--trs-rot, 0deg)) scale(1.4);
+}
 
 /* ── Word drops ──────────────────────────────────────────────── */
 /* Single line by default, as in the Figma composition — positions are authored
@@ -818,7 +830,15 @@
    centre offset, so the shared parallax loop keeps sole ownership of transform. */
 .trs-word { position: absolute; will-change: transform; white-space: nowrap; }
 .trs-word[data-anchor="center"] { translate: -50% 0; }
+/* display:block + width:100% rather than leaving .trs-word__inner as
+   inline-block: two nested auto-width boxes (this one shrink-to-fit inside
+   an also-auto-width absolutely positioned parent) don't reliably resolve
+   to the parent's max-width — the child's shrink-to-fit can come out wider
+   than the space the parent actually has, which is exactly the overflow
+   this rule exists to prevent. Filling the parent's already-capped width
+   directly sidesteps the ambiguity. */
 .trs-word[data-wrap] { white-space: normal; }
+.trs-word[data-wrap] .trs-word__inner { display: block; width: 100%; }
 .trs-word__inner {
   display: inline-block;
   font-weight: 600;
@@ -827,8 +847,8 @@
   opacity: 0;
   transform: translate3d(0, -84px, 0) rotate(calc(var(--trs-rot, 0deg) - 7deg));
   transition:
-    opacity 1s var(--trs-ease-enter),
-    transform 1.4s var(--trs-ease-enter);
+    opacity 0.4s var(--trs-ease-enter),
+    transform 0.6s var(--trs-ease-enter);
   transition-delay: var(--trs-delay, 0ms);
 }
 .trs-word[data-in] .trs-word__inner {
@@ -990,14 +1010,6 @@
 
 .trs-card__head,
 .trs-card__body { position: relative; }
-.trs-card__num {
-  display: block;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 1.2;
-  color: #fff;
-  margin-bottom: clamp(14px, 1.6vw, 24px);
-}
 .trs-card__title {
   display: block;
   font-size: clamp(19px, 1.7vw, 24px);
@@ -1116,6 +1128,7 @@
   .trs-signal__text { justify-content: flex-start; gap: clamp(24px, 5vw, 40px); }
   .trs-timeline__runway { height: 260vh; }
   .trs-core__runway { height: 190vh; }
+  .trs-intro__runway { height: 160vh; }
   .trs-expect__runway { height: 220vh; }
   .trs-chart__plot { aspect-ratio: 1060 / 560; }
 
@@ -1177,18 +1190,12 @@
   /* Pinned scenes report progress = 1 under reduced motion, so everything is
      already marked shown; just remove the transitions. */
   .trs-reveal,
-  .trs-core__word { transition: none !important; }
+  .trs-core__word,
+  .trs-intro__word { transition: none !important; }
   /* No transform override here: killing the transition is enough, and an
      !important translate would fight the static mobile layout below 900px. */
   .trs-chart__tip,
   .trs-chart__marker { transition: none !important; }
-
-  /* Flip becomes a crossfade rather than a rotation. */
-  .trs-drop__flip { transform: none !important; transition: none !important; }
-  .trs-drop__face { backface-visibility: visible; }
-  .trs-drop__face--back { transform: none; opacity: 0; transition: opacity 0.2s linear; }
-  .trs-drop__inner:hover .trs-drop__face--back,
-  .trs-drop__inner:focus-visible .trs-drop__face--back { opacity: 1; }
 
   .trs-drop__overlay { transition: opacity 0.2s linear; }
 }

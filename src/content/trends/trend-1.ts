@@ -207,7 +207,7 @@ export const trend1: TrendContent = {
           layer: "image 386",
           src: `${S}/s2-ai-sad-man.webp`,
           alt: "AI-generated Studio Ghibli style portrait of a dejected man",
-          x: -3.51, y: 70.45, w: 54.96, h: 23.23, rate: RATES.fore, rotate: -2,
+          x: 0, y: 70.45, w: 54.96, h: 23.23, rate: RATES.fore, rotate: -2,
           caption:
             "When ChatGPT’s image generation launch, Studio-Ghibli-style images went viral but also drew backlash and conversation. Critics called it tasteslop—mass-producing a distinctive style while stripping away its originality and intent.",
           source:
@@ -218,7 +218,7 @@ export const trend1: TrendContent = {
         { id: "s2-w1", text: "nostalgia", x: 78, anchor: "center", y: 22.65, color: "#c2a3ff", size: 50, rate: RATES.front, font: "comic" },
         { id: "s2-w2", text: "taste-washing", x: 46, wrapAt: 51.6, y: 48.0, color: "#6e89ff", size: 35, rate: RATES.fore, font: "sixtyfour" },
         { id: "s2-w3", text: "taste slop", x: 22, y: 95, color: "#e1b98d", size: 40, rate: RATES.front, font: "silkscreen" },
-        { id: "s2-w4", text: "ai guilt", x: 69.62, y: 76.13, color: "#ff83ec", size: 30, rate: RATES.mid, rotate: 18, font: "martian" },
+        { id: "s2-w4", text: "ai guilt", x: 60, y: 76.13, color: "#ff83ec", size: 30, rate: RATES.mid, rotate: 18, font: "martian" },
         { id: "s2-w5", text: "techno-pessimism", x: 30, anchor: "center", y: 65.23, color: "#ffb218", size: 40, rate: RATES.back, font: "abhaya" },
       ],
     },

@@ -5,7 +5,7 @@ import ExpectScene from "./ExpectScene";
 import ImplicationCarousel from "./ImplicationCarousel";
 import { ProseParagraph } from "./Prose";
 import { DropImage, Stage, WordDrop } from "./Drops";
-import Reveal from "./Reveal";
+import IntroReveal from "./IntroReveal";
 import { wordFontClass } from "./fonts";
 import type { TrendContent } from "@/content/trends/types";
 import "./scroll.css";
@@ -112,21 +112,9 @@ export default function TrendScrollPage({ content }: { content: TrendContent }) 
 
       <Blend id="blend-to-dark" from={INK_LIGHT} to={INK_DARK} height="120vh" />
 
-      {/* ── What we saw across America ─────────────────────────── */}
-      <section id="what-we-saw" className="trs-intro on-dark">
-        <div
-          className="trs-intro__bg"
-          style={{ backgroundImage: `url(${intro.backdrop})` }}
-          aria-hidden="true"
-        />
-        <div className="trs-shell trs-shell--narrow">
-          <Reveal>
-            <h2 className="trs-h2 trs-h2--display trs-center">{intro.title}</h2>
-          </Reveal>
-          <Reveal delay={120}>
-            <p className="trs-intro__lede">{intro.lede}</p>
-          </Reveal>
-        </div>
+      {/* ── What we saw across America — pinned reveal ─────────── */}
+      <section id="what-we-saw" className={`trs-intro on-dark ${intro.strong ? "trs-intro--strong" : ""}`}>
+        <IntroReveal title={intro.title} lede={intro.lede} backdrop={intro.backdrop} strong={intro.strong} />
       </section>
 
       {/* ── Signals ────────────────────────────────────────────── */}

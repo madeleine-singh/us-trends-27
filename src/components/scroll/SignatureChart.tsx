@@ -80,6 +80,13 @@ function segment(p: number, from: number, to: number) {
   return Math.min(1, Math.max(0, (p - from) / (to - from)));
 }
 
+/* Dash = the path's real length (so offset 0 reveals it exactly); gap = 3x
+   that, so the "hidden" end of the dash sits with generous room either side
+   of the seam instead of landing exactly on it. */
+function dashArrayFor(len: number) {
+  return `${len} ${len * 3}`;
+}
+
 export default function SignatureChart({
   progress,
   caption,
@@ -102,9 +109,14 @@ export default function SignatureChart({
      far end of each path — enough that a sliver of the last segment (the
      signature's tail loop, and the velocity line's decline past 2026) shows
      through even at draw = 0. Measuring each path's real length with
-     getTotalLength() and dashing in that native unit sidesteps the
-     reparametrization entirely, since it's the same length the renderer
-     already uses internally to stroke the path. */
+     getTotalLength() and dashing in that native unit removes most of the
+     error, but not all of it: the renderer's own internal arc-length
+     estimate for the stroke still disagrees with getTotalLength() by a
+     hair on a path this long, and that residual is still enough to leak.
+     The fix is a dasharray with a gap several times longer than the dash
+     (see `dashArrayFor` below) — the reveal math is unaffected (dash
+     length still equals the real path length), but the hidden state now
+     has a wide margin either side instead of landing exactly on the seam. */
   const velocityRef = useRef<SVGPathElement>(null);
   const authorshipRef = useRef<SVGPathElement>(null);
   const [velocityLen, setVelocityLen] = useState(FALLBACK_LENGTH);
@@ -161,7 +173,7 @@ export default function SignatureChart({
               d={VELOCITY_PATH}
               className="trs-chart__line trs-chart__line--velocity"
               style={{
-                strokeDasharray: velocityLen,
+                strokeDasharray: dashArrayFor(velocityLen),
                 strokeDashoffset: velocityLen * (1 - velocityDraw),
               }}
               vectorEffect="non-scaling-stroke"
@@ -171,7 +183,7 @@ export default function SignatureChart({
               d={AUTHORSHIP_PATH}
               className="trs-chart__line trs-chart__line--authorship"
               style={{
-                strokeDasharray: authorshipLen,
+                strokeDasharray: dashArrayFor(authorshipLen),
                 strokeDashoffset: authorshipLen * (1 - authorshipDraw),
               }}
               vectorEffect="non-scaling-stroke"

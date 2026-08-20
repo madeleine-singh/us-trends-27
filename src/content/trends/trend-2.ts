@@ -65,10 +65,13 @@ export const trend2: TrendContent = {
     chart: "trust",
   },
 
+  /* Copy and photo (an aerial shot of a 2026 immigration-enforcement protest)
+     both match Figma node 170:581 exactly. */
   intro: {
     title: "What we saw across America",
-    lede: "Our research across the United States revealed a population that stopped absorbing disappointment quietly and started acting on it, immediately and at scale.",
+    lede: "Our research across the United States revealed a population compelled to act on issues that had become too embedded in the fabric of daily life to ignore or opt out of.",
     backdrop: "/trend-2/what-we-saw-backdrop.webp",
+    strong: true,
   },
 
   signals: [
@@ -299,7 +302,7 @@ export const trend2: TrendContent = {
       ],
       words: [
         { id: "s3-w1", text: "swipe fatigue", x: 1.13, y: 20.5, color: "rgba(248,113,113,0.7)", size: 34, rate: RATES.front, font: "baloo" },
-        { id: "s3-w2", text: "AI companionship", x: -0.57, wrapAt: 55, y: 45.74, color: "#c2a3ff", size: 32, rate: RATES.back, font: "comic" },
+        { id: "s3-w2", text: "AI companionship", x: 0, wrapAt: 55, y: 45.74, color: "#c2a3ff", size: 32, rate: RATES.back, font: "comic" },
       ],
     },
   ],

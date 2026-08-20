@@ -199,6 +199,31 @@ export function useLightZone(zones: { fadeInId?: string; fadeOutId: string }[]) 
   );
 }
 
+/**
+ * Progress (0→1) as an ordinary (non-pinned) element passes through the
+ * viewport: 0 when its top just enters at the bottom, 1 when its bottom
+ * just clears the top. Unlike useRunwayProgress this needs no tall runway
+ * or sticky child — it just reads the section's own natural scroll pass,
+ * for sections that should build in as you scroll by without pinning.
+ */
+export function useScrollThrough<T extends HTMLElement>() {
+  const ref = useRef<T | null>(null);
+  const progress = useScrollValue<number>(
+    () => {
+      const el = ref.current;
+      if (!el) return undefined;
+      const rect = el.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const total = rect.height + vh;
+      const raw = total <= 0 ? 0 : (vh - rect.top) / total;
+      return Math.min(1, Math.max(0, raw));
+    },
+    0,
+    []
+  );
+  return { ref, progress };
+}
+
 /** Tracks which of several sections is currently active, for the progress nav. */
 export function useActiveSection(ids: string[]) {
   const key = ids.join("|");

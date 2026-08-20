@@ -20,8 +20,14 @@ const DISTRUST = FINANCIAL_PRESSURE.map((fp, i) =>
   Math.round((fp + BEHAVIOR_SHIFTS[i] + (100 - SENTIMENT[i])) / 3)
 );
 
-const VB_W = 954;
-const VB_H = 420;
+/* Matches the aspect-ratio baked into the shared `.trs-chart__plot` CSS
+   (authored for Trend 1's 1060x410 viewBox). The two charts have to share
+   that box's aspect ratio exactly, or the SVG's default preserveAspectRatio
+   letterboxes the content — scaling and centering it inside the box —
+   while the HTML axis labels below (positioned by percentage of the full
+   box width) stay spread edge to edge, throwing the two out of alignment. */
+const VB_W = 1060;
+const VB_H = 410;
 const X_PAD = 20;
 const xAt = (i: number) => X_PAD + (i * (VB_W - X_PAD * 2)) / (YEARS.length - 1);
 const yAt = (v: number) => 400 - (v / 100) * 390;
@@ -88,6 +94,15 @@ const FALLBACK_LENGTH = 3000;
 
 function segment(p: number, from: number, to: number) {
   return Math.min(1, Math.max(0, (p - from) / (to - from)));
+}
+
+/* Dash = the path's real length; gap = 3x that. The renderer's internal arc
+   length for the stroke disagrees slightly with getTotalLength() on a path
+   this long, so an exactly-matched dash/gap pair still leaks a sliver at
+   the seam — a generous gap keeps that residual comfortably hidden instead
+   of landing right on the boundary. See SignatureChart.tsx for the same fix. */
+function dashArrayFor(len: number) {
+  return `${len} ${len * 3}`;
 }
 
 export default function TrustChart({
@@ -169,7 +184,7 @@ export default function TrustChart({
                   d={DISTRUST_PATH}
                   className="trs-tchart__line trs-tchart__line--distrust"
                   style={{
-                    strokeDasharray: distrustLen,
+                    strokeDasharray: dashArrayFor(distrustLen),
                     strokeDashoffset: distrustLen * (1 - draw),
                   }}
                   vectorEffect="non-scaling-stroke"

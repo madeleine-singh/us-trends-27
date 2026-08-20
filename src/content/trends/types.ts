@@ -140,7 +140,16 @@ export type TrendContent = {
     chart?: "trust";
   };
 
-  intro: { title: string; lede: string; backdrop: string };
+  intro: {
+    title: string;
+    lede: string;
+    backdrop: string;
+    /** Trend 1's backdrop is a faint, edge-masked texture behind a near-solid
+        ink section (Figma 110:3034). Trend 2's own frame (170:581) instead
+        runs the photo at full strength under a 55% scrim, so it needs a
+        distinct treatment rather than the same masked-texture default. */
+    strong?: boolean;
+  };
 
   signals: Signal[];
 

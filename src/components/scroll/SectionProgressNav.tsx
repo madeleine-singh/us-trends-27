@@ -1,8 +1,12 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { Stop } from "@/content/trends/types";
 import { useActiveSection, useLightZone } from "./motion";
+
+/** How far the user can scroll past a section's entry point before its
+    auto-revealed label collapses back to just the tick. */
+const PULSE_DISMISS_DISTANCE = 120;
 
 /**
  * Persistent vertical section-progress rail ("sticky scroll" in the Figma).
@@ -26,10 +30,41 @@ export default function SectionProgressNav({
   const activeIndex = Math.max(0, ids.indexOf(active));
   const light = useLightZone(lightZones);
 
+  /* Auto-reveal the active label the moment a new section becomes active,
+     then collapse it once the user has scrolled a bit further — so the
+     name is announced on arrival without needing a hover, but doesn't sit
+     open and cover content indefinitely. */
+  const [pulsing, setPulsing] = useState(false);
+  const enterScrollRef = useRef(0);
+  const firstRunRef = useRef(true);
+
+  useEffect(() => {
+    // Skip the pulse on first mount — only real section changes should
+    // trigger the "just arrived" reveal, not the initial render.
+    if (firstRunRef.current) {
+      firstRunRef.current = false;
+      return;
+    }
+    enterScrollRef.current = window.scrollY;
+    setPulsing(true);
+  }, [active]);
+
+  useEffect(() => {
+    if (!pulsing) return;
+    const onScroll = () => {
+      if (Math.abs(window.scrollY - enterScrollRef.current) > PULSE_DISMISS_DISTANCE) {
+        setPulsing(false);
+      }
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [pulsing]);
+
   return (
     <nav
       className="trs-rail"
       data-theme={light ? "light" : undefined}
+      data-pulse={pulsing ? "" : undefined}
       aria-label="Section progress"
     >
       <ol className="trs-rail__list">

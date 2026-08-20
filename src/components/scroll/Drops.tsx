@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import type { DropSpec, WordSpec } from "@/content/trends/types";
 import { useInView, useParallax } from "./motion";
 
@@ -28,7 +28,7 @@ export function Stage({
   );
 }
 
-/** Outbound arrow used on the caption's source line and the link-only badge. */
+/** Outbound arrow used on the overlay's "View source" line. */
 function Arrow() {
   return (
     <svg viewBox="0 0 12 12" aria-hidden="true" focusable="false">
@@ -59,38 +59,66 @@ export function DropImage({
   const { ref: inViewRef, inView } = useInView();
   const shown = controlled ? controlled.shown : inView;
 
+  /* No drop flips — hover/focus darkens the photo and surfaces its caption
+     (if the photo library gave it one) and a "View source" line (if it
+     links out). A drop with neither sits inert: nothing to reveal, nothing
+     to click. */
+  const linked = Boolean(spec.source);
+  const hasOverlay = Boolean(spec.caption) || linked;
+
+  /* The overlay already grows downward to fit its own text (see
+     .trs-drop__overlay) without any help — that alone covers most drops
+     fine, the polar bear included, despite a caption pushing 400
+     characters. Scaling the whole photo up on hover is reserved for the
+     genuine exceptions: drops narrow or short enough that the overlay,
+     even after growing, still comes out disproportionately tall relative
+     to the photo (many lines wrapped into a cramped column) rather than a
+     reasonable few. Measured against the resting (unscaled) layout, not
+     guessed from the caption's character count, since wrapping depends on
+     the drop's actual rendered width. */
+  const dropElRef = useRef<HTMLDivElement | null>(null);
+  const overlayRef = useRef<HTMLSpanElement | null>(null);
+  const [needsGrow, setNeedsGrow] = useState(false);
+
   const setRefs = useCallback(
     (el: HTMLDivElement | null) => {
       parallaxRef.current = el;
       inViewRef.current = el;
+      dropElRef.current = el;
     },
     [parallaxRef, inViewRef]
   );
 
-  /* A drop flips only if the photo library gave it a caption. Two rows are
-     marked "no caption needed, just direct navigation to hyperlink" — those
-     link straight to the source with no caption to reveal, so hover/focus
-     darkens the photo instead of flipping it. */
-  const flippable = Boolean(spec.caption);
-  const linked = Boolean(spec.source);
+  useLayoutEffect(() => {
+    if (!hasOverlay) return;
+    const dropEl = dropElRef.current;
+    const overlay = overlayRef.current;
+    if (!dropEl || !overlay) return;
+    const check = () => {
+      const dropHeight = dropEl.getBoundingClientRect().height;
+      if (!dropHeight) return;
+      setNeedsGrow(overlay.scrollHeight > dropHeight * 1.6);
+    };
+    check();
+    const ro = new ResizeObserver(check);
+    ro.observe(dropEl);
+    return () => ro.disconnect();
+  }, [hasOverlay]);
 
   const faces = (
-    <span className="trs-drop__flip">
-      <span className="trs-drop__face trs-drop__face--front">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={spec.src} alt={spec.alt} loading="lazy" decoding="async" />
-        {linked && !flippable && (
-          <span className="trs-drop__overlay" aria-hidden="true">
-            View source
-            <Arrow />
-          </span>
-        )}
-      </span>
-      {flippable && (
-        <span className="trs-drop__face trs-drop__face--back">
-          <span className="trs-drop__caption">{spec.caption}</span>
+    <span className="trs-drop__frame">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={spec.src} alt={spec.alt} loading="lazy" decoding="async" />
+      {hasOverlay && (
+        <span
+          ref={overlayRef}
+          className="trs-drop__overlay"
+          data-source-only={!spec.caption ? "" : undefined}
+          aria-hidden="true"
+        >
+          {spec.caption && <span className="trs-drop__caption">{spec.caption}</span>}
           {linked && (
-            <span className="trs-drop__source" aria-hidden="true">
+            <span className="trs-drop__source">
               View source
               <Arrow />
             </span>
@@ -105,13 +133,14 @@ export function DropImage({
       ref={setRefs}
       className="trs-drop"
       data-in={shown ? "" : undefined}
+      data-grow={needsGrow ? "" : undefined}
       style={{
         left: `${spec.x}%`,
         top: `${spec.y}%`,
         width: `${spec.w}%`,
         height: `${spec.h}%`,
         ["--trs-rot" as string]: `${spec.rotate ?? 0}deg`,
-        ["--trs-delay" as string]: `${index * 90}ms`,
+        ["--trs-delay" as string]: `${index * 110}ms`,
         ...(controlled
           ? { transform: `translate3d(0, ${controlled.offsetY.toFixed(1)}px, 0)` }
           : null),
@@ -125,16 +154,30 @@ export function DropImage({
           rel="noopener noreferrer"
         >
           {faces}
-          <span className="trs-sr"> (opens the source in a new tab)</span>
+          <span className="trs-sr">
+            {spec.caption ? ` ${spec.caption} ` : " "}
+            (opens the source in a new tab)
+          </span>
         </a>
       ) : (
-        <span className="trs-drop__inner" tabIndex={flippable ? 0 : undefined}>
+        <span className="trs-drop__inner" tabIndex={hasOverlay ? 0 : undefined}>
           {faces}
+          {spec.caption && <span className="trs-sr"> {spec.caption}</span>}
         </span>
       )}
     </div>
   );
 }
+
+/* The page's own content stops growing past --max-w (1280px) — see
+   .trs-shell — but the artboard these sizes were measured against is 1449px
+   wide. Above 1280px viewport, vw-based sizing would keep scaling the word
+   up even though the stage it sits in has already stopped growing, so
+   words start overflowing the stage at any viewport wider than 1280px.
+   Capping the clamp's max at the size a word would actually reach right at
+   1280px (rather than the raw Figma value) keeps the two in step. */
+const CONTENT_MAX_W = 1280;
+const ARTBOARD_W = 1449;
 
 /**
  * A single piece of borrowed internet vocabulary dropping into the collage.
@@ -166,7 +209,7 @@ export function WordDrop({ spec, index = 0 }: { spec: WordSpec; index?: number }
         top: `${spec.y}%`,
         ...(spec.wrapAt ? { maxWidth: `${spec.wrapAt}%` } : null),
         ["--trs-rot" as string]: `${spec.rotate ?? 0}deg`,
-        ["--trs-delay" as string]: `${index * 90}ms`,
+        ["--trs-delay" as string]: `${index * 110}ms`,
       }}
     >
       <span
@@ -174,7 +217,7 @@ export function WordDrop({ spec, index = 0 }: { spec: WordSpec; index?: number }
         data-font={spec.font}
         style={{
           color: spec.color,
-          fontSize: `clamp(20px, ${(spec.size / 14.49).toFixed(2)}vw, ${spec.size}px)`,
+          fontSize: `clamp(20px, ${(spec.size / 14.49).toFixed(2)}vw, ${((spec.size * CONTENT_MAX_W) / ARTBOARD_W).toFixed(1)}px)`,
         }}
       >
         {spec.text}
