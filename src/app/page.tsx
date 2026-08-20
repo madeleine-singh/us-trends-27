@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import LiveBackdrop from "@/components/LiveBackdrop";
 import ScrollReveal from "@/components/ScrollReveal";
+import ExecSummaryScene from "@/components/ExecSummaryScene";
 import "./landing.css";
 
 export const metadata: Metadata = {
@@ -66,8 +67,8 @@ export default function HomePage() {
             <h1 className="lp-display">The forces reshaping how we live</h1>
 
             <div className="lp-hero__scroll">
-              <a href="#executive-summary" className="btn-primary lp-cta lp-cta--on-glow">
-                Scroll
+              <a href="#executive-summary" className="lp-cta lp-cta--ghost">
+                Scroll ↓
               </a>
             </div>
           </div>
@@ -78,30 +79,7 @@ export default function HomePage() {
 
       {/* ── 2. Executive summary ────────────────────────────────── */}
       <section id="executive-summary" className="lp-section lp-exec on-dark">
-        <LiveBackdrop>
-          <span className="lp-orb lp-exec__orb--a" />
-          <span className="lp-orb lp-exec__orb--b" />
-          <span className="lp-orb lp-exec__orb--c" />
-          <span className="lp-orb lp-exec__orb--d" />
-          <span className="lp-exec__veil" />
-        </LiveBackdrop>
-
-        <div className="lp-section__inner">
-          <div className="container">
-            <div className="lp-exec__split">
-              <ScrollReveal>
-                <h2 className="lp-h2">Executive Summary</h2>
-              </ScrollReveal>
-              <ScrollReveal delay={90}>
-                <p className="lp-body-xl" style={{ color: "rgba(255,255,255,0.92)" }}>
-                  Built from research across the US, these trends reveal how people&apos;s
-                  behaviors and attitudes are evolving alongside shifts in business,
-                  technology, and society.
-                </p>
-              </ScrollReveal>
-            </div>
-          </div>
-        </div>
+        <ExecSummaryScene />
       </section>
 
       <Blend from={EXEC_END} to={INK_T1} />

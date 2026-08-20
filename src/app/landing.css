@@ -103,6 +103,28 @@
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.85);
 }
 
+/* Figma "Secondary Brand" / ghost style for the hero Scroll CTA.
+   Transparent fill, white border (meets WCAG 1.4.11 at 3:1 on the violet bg),
+   white text. Works standalone without btn-primary. */
+.lp-cta--ghost {
+  display: inline-block;
+  background: transparent;
+  color: #fff;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.72);
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  transition: background 0.28s var(--lp-ease), box-shadow 0.28s var(--lp-ease);
+}
+.lp-cta--ghost:hover {
+  background: rgba(255, 255, 255, 0.10);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.95);
+}
+.lp-cta--ghost:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.9);
+  outline-offset: 3px;
+}
+
 /* ── Section blend bands ────────────────────────────────────── */
 /* Backgrounds change through a full-width band rather than cutting, the same
    device the /trend-1 page uses. Extra stops hold the start and end
@@ -239,12 +261,32 @@
 }
 
 /* ── 2. Executive summary — node 114:13 ─────────────────────── */
+/* Scrollytelling runway — the section is a container only; height is driven by
+   the runway inside, not the viewport. lp-section min-height / padding are
+   overridden so the runway fills the section cleanly. */
 .lp-exec {
+  min-height: 0;
+  padding: 0;
+  display: block;
   color: #fff;
   background: linear-gradient(176deg, #241a4a 0%, #2f2260 52%, #201a44 100%);
 }
 
-.lp-exec .lp-backdrop { --fade-top: 14%; --fade-bottom: 14%; }
+/* Runway: scroll distance for 4 paragraph reveals. */
+.lp-exec__runway { position: relative; height: 360vh; }
+
+/* Pin: viewport-filling sticky frame that holds the backdrop + copy. */
+.lp-exec__pin {
+  position: sticky;
+  top: var(--nav-h);
+  min-height: calc(100vh - var(--nav-h));
+  min-height: calc(100svh - var(--nav-h));
+  display: flex;
+  align-items: center;
+  overflow: clip;
+}
+
+.lp-exec__pin .lp-backdrop { --fade-top: 14%; --fade-bottom: 14%; }
 
 /* The 30% black veil from the Figma frame, over the mesh but under the copy. */
 .lp-exec__veil {
@@ -274,15 +316,55 @@
   animation: lp-drift-d 46s ease-in-out infinite alternate;
 }
 
-/* Headline left, summary right — collapses to a stack. */
-.lp-exec__split {
-  display: grid;
-  grid-template-columns: minmax(0, 504fr) minmax(0, 540fr);
-  gap: clamp(32px, 5vw, 96px);
-  align-items: center;
+/* Content block: centred column, Figma-matching large serif.
+   Width is wider than before so lines wrap less, keeping paragraph heights
+   short enough that all four fit inside a laptop viewport when fully revealed. */
+.lp-exec__inner {
+  width: min(900px, 90%);
+  margin: 0 auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 2.2vw, 32px);
+  /* Vertical breathing room so the eyebrow doesn't crowd the nav. */
+  padding: clamp(32px, 4svh, 64px) 0;
 }
-@media (max-width: 900px) {
-  .lp-exec__split { grid-template-columns: 1fr; gap: 28px; }
+
+.lp-exec__eyebrow {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--purple-lt, #e5b4ff);
+  margin: 0;
+}
+
+/* Large editorial serif — Cormorant Garamond standing in for GT Sectra Fine
+   (same substitution used on the trend pages). Sized so all four paragraphs
+   fit within a standard laptop viewport (1440×900 or 1512×982). */
+.lp-exec__text {
+  font-family: var(--font-editorial), Georgia, serif;
+  font-weight: 600;
+  font-size: clamp(18px, 2.1vw, 32px);
+  line-height: 1.28;
+  letter-spacing: -0.01em;
+  color: rgba(255, 255, 255, 0.94);
+  margin: 0;
+}
+
+/* Fade + upward lift: 0 → 1 only, never a dimmed intermediate that fails
+   contrast. Same mechanic as .trs-reveal on the trend pages. */
+.lp-exec__reveal {
+  opacity: 0;
+  transform: translate3d(0, 0.25em, 0);
+  transition:
+    opacity 0.65s var(--lp-ease),
+    transform 0.75s var(--lp-ease);
+}
+.lp-exec__reveal[data-shown] {
+  opacity: 1;
+  transform: none;
 }
 
 /* ── 3. Trend 1 — node 284:671 ──────────────────────────────── */
@@ -578,4 +660,7 @@
     transform: none !important;
   }
   .lp-shot { transition: none; }
+  /* ExecSummaryScene uses reduced = true to skip progress and show everything;
+     the transitions just need killing so reveals appear immediately. */
+  .lp-exec__reveal { transition: none !important; }
 }
