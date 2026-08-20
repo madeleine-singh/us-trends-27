@@ -805,24 +805,13 @@
 .trs-drop:hover,
 .trs-drop:focus-within { z-index: 4; }
 
-/* Most drops don't need any of this: the overlay already grows downward to
-   fit its own caption (see .trs-drop__overlay) regardless of the photo's
-   size. Scaling the whole photo up on hover is reserved for drops flagged
-   [data-grow] — narrow or short enough that even after growing, the
-   overlay comes out disproportionately tall (many wrapped lines in a
-   cramped column) rather than a reasonable few. That flag is measured at
-   runtime in Drops.tsx, not guessed here. Overlapping a neighbour when it
-   does grow is expected and fine, per the design call. */
+/* Hover/focus darkens the photo and surfaces its caption. The overlay
+   grows downward past the photo's bottom edge for long captions — no
+   scaling of the photo itself, just the overlay expanding freely. */
 @media (hover: hover) and (pointer: fine) {
   .trs-drop__inner:hover .trs-drop__overlay { opacity: 1; }
-  .trs-drop[data-in][data-grow] .trs-drop__inner:hover {
-    transform: translate3d(0, 0, 0) rotate(var(--trs-rot, 0deg)) scale(1.4);
-  }
 }
 .trs-drop__inner:focus-visible .trs-drop__overlay { opacity: 1; }
-.trs-drop[data-in][data-grow] .trs-drop__inner:focus-visible {
-  transform: translate3d(0, 0, 0) rotate(var(--trs-rot, 0deg)) scale(1.4);
-}
 
 /* ── Word drops ──────────────────────────────────────────────── */
 /* Single line by default, as in the Figma composition — positions are authored
@@ -1063,20 +1052,31 @@
   justify-content: center;
   gap: 16px;
 }
+
+/* Viewport that clips the translated dot track. Fade-masks the edges so
+   off-screen dots dissolve rather than hard-clipping. Width = 5 × 44 px,
+   keeping the active dot centred with two neighbours visible on each side. */
+.trs-carousel__steps-viewport {
+  width: 220px;
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent 0, black 22px, black 198px, transparent 220px);
+  -webkit-mask-image: linear-gradient(to right, transparent 0, black 22px, black 198px, transparent 220px);
+}
 .trs-carousel__steps {
   list-style: none;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0;
   margin: 0;
   padding: 0;
+  transition: transform 0.32s var(--ease);
 }
-/* 8px visual dot inside a 44px target, so the stepper stays tappable without
-   turning into a row of buttons. */
+/* 8px visual dot inside a 44px target, so the stepper stays tappable. */
 .trs-carousel__step {
   appearance: none;
   border: 0;
   background: none;
+  flex: 0 0 44px;
   width: 44px;
   height: 44px;
   padding: 0;
@@ -1084,14 +1084,18 @@
   place-items: center;
   cursor: pointer;
 }
+/* Active dot expands to a pill; neighbours are circles that fade with
+   distance. --dist is set per-step by ImplicationCarousel. */
 .trs-carousel__step::before {
   content: "";
   width: 8px;
   height: 8px;
+  border-radius: 4px;
   background: rgba(255, 255, 255, 0.4);
-  transition: width 0.32s var(--ease), background-color 0.32s var(--ease);
+  transition: width 0.32s var(--ease), opacity 0.32s var(--ease), background-color 0.32s var(--ease);
+  opacity: max(0.3, calc(1 - var(--dist, 0) * 0.25));
 }
-.trs-carousel__step[data-active]::before { width: 42px; background: #fff; }
+.trs-carousel__step[data-active]::before { width: 24px; background: #fff; opacity: 1; }
 .trs-carousel__step:hover::before { background: rgba(255, 255, 255, 0.75); }
 .trs-carousel__step:focus-visible { outline: 2px solid #fff; outline-offset: -6px; }
 
@@ -1186,6 +1190,9 @@
   .trs-card__body,
   .trs-carousel__step::before { transition: none !important; }
   .trs-card__body { transform: none !important; }
+  /* Pill expands instantly; active dot and track jump without sliding. */
+  .trs-carousel__steps { transition: none !important; }
+  .trs-carousel__step[data-active]::before { width: 24px; }
 
   /* Pinned scenes report progress = 1 under reduced motion, so everything is
      already marked shown; just remove the transitions. */

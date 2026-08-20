@@ -71,6 +71,14 @@ export default function ImplicationCarousel({
   const reduced = useReducedMotion();
   const step = useCardMetrics(trackRef);
   const [index, setIndex] = useState(0);
+  /* Dot track mirrors the card raw index so the indicator slides with each
+     arrow click. Starts at total×2 — the centre of a 5-copy array — giving
+     a large buffer on both sides before running out of rendered dots. A
+     transitionend listener re-centres back to this range after every step,
+     invisibly, since all dots are featureless and look identical. */
+  const [dotRaw, setDotRaw] = useState(total * 2);
+  const dotRawRef = useRef(total * 2);
+  const dotTrackRef = useRef<HTMLOListElement>(null);
   /** Cards that are substantially inside the viewport read at full strength;
       the ones cropped at the edge sit back at 50%, per the Figma annotation. */
   const [visible, setVisible] = useState<Set<string>>(new Set());
@@ -124,8 +132,21 @@ export default function ImplicationCarousel({
           const corrected = total + wrap(settledRaw, total);
           rawIndexRef.current = corrected;
           track.scrollTo({ left: corrected * step, behavior: "instant" as ScrollBehavior });
+          /* Snap dot track back to its centre range — no animation so the jump is invisible. */
+          const correctedDot = total * 2 + wrap(dotRawRef.current, total);
+          dotRawRef.current = correctedDot;
+          const dotTrack = dotTrackRef.current;
+          if (dotTrack) dotTrack.style.transition = "none";
+          setDotRaw(correctedDot);
+          if (dotTrack) requestAnimationFrame(() => requestAnimationFrame(() => {
+            if (dotTrackRef.current) dotTrackRef.current.style.transition = "";
+          }));
         } else {
           rawIndexRef.current = settledRaw;
+          /* Swipe settled — animate dot to the equivalent position in dot's centre range. */
+          const settledDot = total * 2 + wrap(settledRaw, total);
+          dotRawRef.current = settledDot;
+          setDotRaw(settledDot);
         }
       }, 120);
     };
@@ -167,15 +188,41 @@ export default function ImplicationCarousel({
     return () => io.disconnect();
   }, [cards.length]);
 
+  /* After every slide animation, invisibly re-centre the dot track back into
+     the middle of the 5-copy array. Because all dots look identical (no
+     numbers), the snap is undetectable — it just resets the buffer. */
+  useEffect(() => {
+    const dotTrack = dotTrackRef.current;
+    if (!dotTrack) return;
+    const onTransitionEnd = (e: TransitionEvent) => {
+      if (e.propertyName !== "transform") return;
+      const current = dotRawRef.current;
+      const middle = total * 2 + wrap(current, total);
+      if (middle === current) return;
+      dotRawRef.current = middle;
+      dotTrack.style.transition = "none";
+      setDotRaw(middle);
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        if (dotTrackRef.current) dotTrackRef.current.style.transition = "";
+      }));
+    };
+    dotTrack.addEventListener("transitionend", onTransitionEnd);
+    return () => dotTrack.removeEventListener("transitionend", onTransitionEnd);
+  }, [total]);
+
   const next = useCallback(() => {
     const raw = rawIndexRef.current + 1;
     rawIndexRef.current = raw;
+    dotRawRef.current += 1;
+    setDotRaw((r) => r + 1);
     scrollToRaw(raw, reduced ? ("auto" as ScrollBehavior) : "smooth");
   }, [scrollToRaw, reduced]);
 
   const prev = useCallback(() => {
     const raw = rawIndexRef.current - 1;
     rawIndexRef.current = raw;
+    dotRawRef.current -= 1;
+    setDotRaw((r) => r - 1);
     scrollToRaw(raw, reduced ? ("auto" as ScrollBehavior) : "smooth");
   }, [scrollToRaw, reduced]);
 
@@ -259,20 +306,32 @@ export default function ImplicationCarousel({
       </ul>
 
       <div className="trs-carousel__controls">
-        <ol className="trs-carousel__steps">
-          {cards.map((card, i) => (
-            <li key={card.number}>
-              <button
-                type="button"
-                className="trs-carousel__step"
-                data-active={i === index ? "" : undefined}
-                aria-current={i === index ? "true" : undefined}
-                aria-label={`Show card ${i + 1} of ${cards.length}: ${card.title}`}
-                onClick={() => jumpTo(i)}
-              />
-            </li>
-          ))}
-        </ol>
+        {/* Sliding dot track — triple copy (total × 3 dots) mirrors the card
+            track. The active dot is always translateX'd to the viewport centre
+            (slot 2 of 5). Clicking left of centre calls prev, right calls next.
+            On arrow click dotRaw shifts by ±1 and the CSS transition slides the
+            track; on copy-boundary wrap the track snaps back invisibly. */}
+        <div className="trs-carousel__steps-viewport">
+          <ol
+            ref={dotTrackRef}
+            className="trs-carousel__steps"
+            style={{ transform: `translateX(${88 - dotRaw * 44}px)` }}
+          >
+            {Array.from({ length: total * 5 }, (_, i) => (
+              <li key={i}>
+                <button
+                  type="button"
+                  className="trs-carousel__step"
+                  data-active={i === dotRaw ? "" : undefined}
+                  aria-hidden="true"
+                  tabIndex={-1}
+                  style={{ [("--dist") as string]: Math.abs(i - dotRaw) }}
+                  onClick={i < dotRaw ? prev : i > dotRaw ? next : undefined}
+                />
+              </li>
+            ))}
+          </ol>
+        </div>
 
         <div className="trs-carousel__arrows">
           <button type="button" className="trs-carousel__arrow" onClick={prev} aria-label="Previous card">

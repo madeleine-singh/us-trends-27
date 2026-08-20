@@ -147,7 +147,7 @@ export const trend2: TrendContent = {
           layer: "mamdani",
           src: `${S}/s1-mamdani.webp`,
           alt: "Zohran Mamdani waving beside a companion amid confetti at his inauguration",
-          x: -7.40, y: 72.66, w: 107.40, h: 27.34, rate: RATES.mid, rotate: -1.5,
+          x: 0, y: 72.66, w: 100, h: 27.34, rate: RATES.mid, rotate: -1.5,
           caption:
             "Zohran Mamdani was sworn in as New York City's mayor at midnight on January 1, 2026, becoming its first Muslim mayor. He took office promising to govern “expansively and audaciously” for a city that elected a democratic socialist.",
           source: "https://www.bbc.com/news/articles/czd782pjgq3o",

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useRef } from "react";
 import type { DropSpec, WordSpec } from "@/content/trends/types";
 import { useInView, useParallax } from "./motion";
 
@@ -62,48 +62,18 @@ export function DropImage({
   /* No drop flips — hover/focus darkens the photo and surfaces its caption
      (if the photo library gave it one) and a "View source" line (if it
      links out). A drop with neither sits inert: nothing to reveal, nothing
-     to click. */
+     to click. The overlay grows downward past the photo's bottom edge for
+     long captions; no scaling of the photo itself. */
   const linked = Boolean(spec.source);
   const hasOverlay = Boolean(spec.caption) || linked;
-
-  /* The overlay already grows downward to fit its own text (see
-     .trs-drop__overlay) without any help — that alone covers most drops
-     fine, the polar bear included, despite a caption pushing 400
-     characters. Scaling the whole photo up on hover is reserved for the
-     genuine exceptions: drops narrow or short enough that the overlay,
-     even after growing, still comes out disproportionately tall relative
-     to the photo (many lines wrapped into a cramped column) rather than a
-     reasonable few. Measured against the resting (unscaled) layout, not
-     guessed from the caption's character count, since wrapping depends on
-     the drop's actual rendered width. */
-  const dropElRef = useRef<HTMLDivElement | null>(null);
-  const overlayRef = useRef<HTMLSpanElement | null>(null);
-  const [needsGrow, setNeedsGrow] = useState(false);
 
   const setRefs = useCallback(
     (el: HTMLDivElement | null) => {
       parallaxRef.current = el;
       inViewRef.current = el;
-      dropElRef.current = el;
     },
     [parallaxRef, inViewRef]
   );
-
-  useLayoutEffect(() => {
-    if (!hasOverlay) return;
-    const dropEl = dropElRef.current;
-    const overlay = overlayRef.current;
-    if (!dropEl || !overlay) return;
-    const check = () => {
-      const dropHeight = dropEl.getBoundingClientRect().height;
-      if (!dropHeight) return;
-      setNeedsGrow(overlay.scrollHeight > dropHeight * 1.6);
-    };
-    check();
-    const ro = new ResizeObserver(check);
-    ro.observe(dropEl);
-    return () => ro.disconnect();
-  }, [hasOverlay]);
 
   const faces = (
     <span className="trs-drop__frame">
@@ -111,7 +81,6 @@ export function DropImage({
       <img src={spec.src} alt={spec.alt} loading="lazy" decoding="async" />
       {hasOverlay && (
         <span
-          ref={overlayRef}
           className="trs-drop__overlay"
           data-source-only={!spec.caption ? "" : undefined}
           aria-hidden="true"
@@ -133,7 +102,6 @@ export function DropImage({
       ref={setRefs}
       className="trs-drop"
       data-in={shown ? "" : undefined}
-      data-grow={needsGrow ? "" : undefined}
       style={{
         left: `${spec.x}%`,
         top: `${spec.y}%`,
