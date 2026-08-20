@@ -26,10 +26,22 @@ const PEAK = { cx: 245, cy: 143 };
 const PATTERN = { cx: 465, cy: 287 };
 const CROSSOVER = { cx: 666, cy: 213 };
 
-/* Symmetric shoulder knots either side of PEAK force a horizontal tangent
-   there, so the apex lands exactly on the node rather than overshooting it. */
+/* Derived from the Figma velocity SVG (node 142:8455, viewBox 0 0 949.572 239.983,
+   placed at top=127 in the 446px chart frame). Transform: x_code ≈ x_svg,
+   y_code = 127 + y_svg * 0.9875. Path reversed to run left→right so the
+   clipPath reveal matches the natural reading direction. */
 const VELOCITY_PATH =
-  "M 0,360 C 14.2,356.0 59.2,353.0 85.0,336.0 C 110.8,319.0 138.3,286.2 155.0,258.0 C 171.7,229.8 170.0,186.2 185.0,167.0 C 200.0,147.8 225.0,143.0 245.0,143.0 C 265.0,143.0 282.5,161.5 305.0,167.0 C 327.5,172.5 353.3,172.2 380.0,176.0 C 406.7,179.8 435.0,185.3 465.0,190.0 C 495.0,194.7 526.5,200.2 560.0,204.0 C 593.5,207.8 626.0,202.3 666.0,213.0 C 706.0,223.7 753.3,248.5 800.0,268.0 C 846.7,287.5 921.7,319.7 946.0,330.0";
+  "M 1.5,362.5" +
+  " C 1.6,362.5 2.1,361.0 14.4,341.2" +
+  " C 25.8,322.7 49.4,288.4 67.3,264.3" +
+  " C 85.3,240.1 97.3,227.7 106.1,219.2" +
+  " C 119.9,205.9 138.4,193.8 169.9,176.1" +
+  " C 188.4,165.7 213.8,155.6 235.4,147.8" +
+  " C 257.1,139.9 274.6,135.3 315.0,132.1" +
+  " C 355.5,128.9 418.3,127.1 468.7,129.8" +
+  " C 519.0,132.5 554.9,139.6 611.4,160.1" +
+  " C 667.9,180.6 676.8,258.8 740.5,291.0" +
+  " C 804.3,323.2 920.5,308.4 948.1,324.6";
 
 /* One continuous path: the line rises, crosses velocity, then signs itself
    past 2027. The flourish is generated parametrically as a cursive loop
@@ -117,13 +129,10 @@ export default function SignatureChart({
      (see `dashArrayFor` below) — the reveal math is unaffected (dash
      length still equals the real path length), but the hidden state now
      has a wide margin either side instead of landing exactly on the seam. */
-  const velocityRef = useRef<SVGPathElement>(null);
   const authorshipRef = useRef<SVGPathElement>(null);
-  const [velocityLen, setVelocityLen] = useState(FALLBACK_LENGTH);
   const [authorshipLen, setAuthorshipLen] = useState(FALLBACK_LENGTH);
 
   useLayoutEffect(() => {
-    if (velocityRef.current) setVelocityLen(velocityRef.current.getTotalLength());
     if (authorshipRef.current) setAuthorshipLen(authorshipRef.current.getTotalLength());
   }, []);
 
@@ -156,6 +165,16 @@ export default function SignatureChart({
               in 2026, and finish highest in 2027. Directional only; there is no measured index.
             </desc>
 
+            <defs>
+              {/* Clip-path reveal for the dashed velocity line. Using a rect
+                  that expands left-to-right lets the line keep its visual
+                  stroke-dasharray (5 5) — a dashoffset approach would
+                  override it with one big dash. */}
+              <clipPath id="velocity-reveal">
+                <rect x={-20} y={-20} width={(VB_W + 40) * velocityDraw} height={VB_H + 40} />
+              </clipPath>
+            </defs>
+
             {YEARS.map((y) => (
               <line
                 key={y.label}
@@ -169,13 +188,9 @@ export default function SignatureChart({
             ))}
 
             <path
-              ref={velocityRef}
               d={VELOCITY_PATH}
               className="trs-chart__line trs-chart__line--velocity"
-              style={{
-                strokeDasharray: dashArrayFor(velocityLen),
-                strokeDashoffset: velocityLen * (1 - velocityDraw),
-              }}
+              clipPath="url(#velocity-reveal)"
               vectorEffect="non-scaling-stroke"
             />
             <path
@@ -248,9 +263,10 @@ export default function SignatureChart({
           ))}
         </div>
 
+        <p className="trs-chart__disclaimer">{disclaimer}</p>
+
         <figcaption className="trs-chart__caption">
           <p>{caption}</p>
-          <p className="trs-chart__disclaimer">{disclaimer}</p>
         </figcaption>
       </figure>
     </div>

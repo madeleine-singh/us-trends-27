@@ -435,6 +435,13 @@
   color: var(--gray-600);
 }
 .trs-chart__key::before { content: ""; width: 22px; height: 3px; background: currentColor; }
+.trs-chart__key--velocity::before {
+  background: repeating-linear-gradient(
+    to right,
+    currentColor 0, currentColor 5px,
+    transparent 5px, transparent 10px
+  );
+}
 .trs-chart__key--authorship { color: var(--purple-dk); }
 
 .trs-chart__figure { margin: 0; }
@@ -451,7 +458,7 @@
   /* dasharray/dashoffset are set inline in SignatureChart.tsx from each
      path's real measured length, not a normalized pathLength. */
 }
-.trs-chart__line--velocity { stroke: #767676; }
+.trs-chart__line--velocity { stroke: #808080; stroke-width: 3; stroke-dasharray: 5 5; }
 .trs-chart__line--authorship { stroke: var(--purple); stroke-width: 3.5; }
 .trs-chart__marker {
   fill: var(--purple);
@@ -510,12 +517,13 @@
 .trs-chart__caption { margin: clamp(10px, 1.4vw, 18px) 0 0; max-width: 720px; }
 .trs-chart__caption p { font-size: 15px; line-height: 1.5; color: var(--gray-600); margin: 0; }
 .trs-chart__disclaimer {
-  margin-top: 8px !important;
-  font-size: 12px !important;
+  margin: 6px 0 0;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--gray-400) !important;
+  color: var(--gray-400);
+  text-align: right;
 }
 
 /* ── Trend 2 timeline chart ──────────────────────────────────────

@@ -237,9 +237,10 @@ export default function TrustChart({
             ))}
           </div>
 
+          <p className="trs-chart__disclaimer">{disclaimer}</p>
+
           <figcaption className="trs-chart__caption">
             <p>{caption}</p>
-            <p className="trs-chart__disclaimer">{disclaimer}</p>
           </figcaption>
         </figure>
       </div>
